@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Layout, Menu, Button, Avatar } from "antd";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   HomeOutlined,
   StockOutlined,
@@ -10,42 +10,60 @@ import {
   TeamOutlined,
   ScheduleOutlined,
   FileTextOutlined,
-  MenuOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
   LogoutOutlined
 } from "@ant-design/icons";
 
-const { Sider } = Layout;
+const { Header, Sider } = Layout;
 
-const Navbar = () => {
+const Navbar = ({ children }) => {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const isCollapsed = localStorage.getItem("collapsed");
+    if (isCollapsed === "true") {
+      setCollapsed(true);
+    }
+  }, []);
 
   const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
+    const newState = !collapsed;
+    setCollapsed(newState);
+    localStorage.setItem("collapsed", newState.toString());
+  };
+
+  const handleLogout = () => {
+    navigate("/");
+    document.cookie = "cookieName=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  };
+
+  const onBreakpoint = broken => {
+    if (broken) {
+      setCollapsed(true);
+    }
   };
 
   return (
     <Layout>
       <Sider
-        collapsible
         collapsed={collapsed}
-        onCollapse={toggleCollapsed}
-        theme="light"
         width={270}
-        style={{ overflow: "auto", height: "100vh", position: "fixed", left: 0 }}
+        style={{
+          overflow: "auto",
+          height: "100vh",
+          background: "#fff"
+        }}
+        breakpoint="md"  // Set the breakpoint to md (default is lg)
+        collapsedWidth={60} // Hide the sidebar when collapsed
+        onBreakpoint={onBreakpoint}
       >
-        <div style={{ textAlign: "center", marginBottom: "20px" }}>
-          <Link to="/">
-            <div style={{ color: "#1890ff", fontSize: "24px", fontWeight: "bold", marginBottom: "10px" }}>
-              {collapsed ? "Logo" : "Your Brand Name"}
-            </div>
-          </Link>
-        </div>
         <Menu
           mode="inline"
-          theme="light"
+          style={{ flexGrow: 1 }}
           selectedKeys={[location.pathname]}
-          style={{ borderRight: 0 }}
         >
           <Menu.Item key="/Home" icon={<HomeOutlined />}>
             <Link to="/Home">Home</Link>
@@ -73,22 +91,43 @@ const Navbar = () => {
           </Menu.Item>
         </Menu>
       </Sider>
-      <Layout className="site-layout" style={{ marginLeft: collapsed ? 80 : 270 }}>
-        <Layout.Header style={{ background: '#fff', padding: 0 }}>
-          <Button
-            className="trigger"
-            style={{ float: 'left' }}
-            onClick={toggleCollapsed}
-          >
-            <MenuOutlined />
-          </Button>
-          <div style={{ float: 'right', marginRight: '20px' }}>
-            <Avatar style={{ backgroundColor: '#87d068' }} icon={<LogoutOutlined />} />
+      <Layout>
+        <Header style={{ background: "#fff", padding: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px" }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Button
+                className="trigger"
+                style={{ marginRight: "20px" }}
+                onClick={toggleCollapsed}
+                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              />
+              <Link to="/">
+                <div style={{ color: "#1890ff", fontSize: "24px", fontWeight: "bold", marginBottom: "10px" }}>
+                  FUSIFU
+                </div>
+              </Link>
+            </div>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <div
+                onClick={handleLogout}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  marginRight: "10px"
+                }}
+              >
+                <LogoutOutlined style={{ fontSize: "24px" }} />
+                <span style={{ fontSize: "16px", fontWeight: "bold", marginLeft: "5px" }}>Logout</span>
+              </div>
+            </div>
           </div>
-          <div style={{ float: 'right', marginRight: '20px' }}>
-            Your Brand Name
+        </Header>
+        <Layout.Content>
+          <div style={{ padding: 24, background: "#fff", minHeight: 360 }}>
+            {children}
           </div>
-        </Layout.Header>
+        </Layout.Content>
       </Layout>
     </Layout>
   );

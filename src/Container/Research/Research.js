@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Layout, Typography, Modal, Form, Input, Button, Card, Row, Col } from "antd";
+import Navbar from "../../Component/Navbar";
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -54,6 +55,7 @@ const Research = () => {
 
   return (
     <Layout hasSider style={{ minHeight: "100vh" }}>
+      <Navbar>
       <Layout>
         <Content style={{ padding: "24px" }}>
           <Button type="primary" onClick={showModal} style={{ marginBottom: 16 }}>
@@ -138,6 +140,7 @@ const Research = () => {
           </Modal>
         </Content>
       </Layout>
+      </Navbar>
     </Layout>
   );
 };

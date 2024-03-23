@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Typography, Card, Menu, Dropdown, Table, Modal } from "antd";
 import { EllipsisOutlined, UserOutlined, DesktopOutlined } from "@ant-design/icons";
+import Navbar from "../../Component/Navbar";
 import { useParams } from "react-router-dom";
 
 const { Content } = Layout;
@@ -124,37 +125,39 @@ const Details = () => {
 
     return (
         <Layout hasSider style={{ minHeight: "100vh" }}>
-            <Layout>
-                <Content style={{ padding: "24px", minHeight: "280px" }}>
-                    {lab && (
-                        <>
-                            <div style={{ display: "flex", flexWrap: "wrap" }}>
-                                {systems.map((system) => (
-                                    <Card
-                                        key={system.id}
-                                        style={{ width: 250, margin: "0 16px 16px 0" }}
-                                        actions={[
-                                            <Dropdown overlay={menu(system.id)} trigger={['click']} key="ellipsis">
-                                                <EllipsisOutlined />
-                                            </Dropdown>,
-                                        ]}
-                                    >
-                                        <Card.Meta title={system.name} description={system.details} />
-                                    </Card>
-                                ))}
-                            </div>
-                        </>
-                    )}
-                    <Modal
-                        title="View System Details"
-                        visible={isModalVisible}
-                        footer={null}
-                        onCancel={handleCancel}
-                    >
-                        <Table dataSource={systemLogsData} columns={columns} />
-                    </Modal>
-                </Content>
-            </Layout>
+            <Navbar>
+                <Layout>
+                    <Content style={{ padding: "24px", minHeight: "280px" }}>
+                        {lab && (
+                            <>
+                                <div style={{ display: "flex", flexWrap: "wrap" }}>
+                                    {systems.map((system) => (
+                                        <Card
+                                            key={system.id}
+                                            style={{ width: 250, margin: "0 16px 16px 0" }}
+                                            actions={[
+                                                <Dropdown overlay={menu(system.id)} trigger={['click']} key="ellipsis">
+                                                    <EllipsisOutlined />
+                                                </Dropdown>,
+                                            ]}
+                                        >
+                                            <Card.Meta title={system.name} description={system.details} />
+                                        </Card>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                        <Modal
+                            title="View System Details"
+                            visible={isModalVisible}
+                            footer={null}
+                            onCancel={handleCancel}
+                        >
+                            <Table dataSource={systemLogsData} columns={columns} />
+                        </Modal>
+                    </Content>
+                </Layout>
+            </Navbar>
         </Layout>
     );
 };

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Layout, Typography, Card, Modal, Button, Form, Input } from "antd";
 import { PlusOutlined, UserOutlined, DesktopOutlined } from "@ant-design/icons";
+import Navbar from "../../Component/Navbar";
 import { useNavigate } from "react-router-dom";
 import './Lab.css'
 
@@ -41,39 +42,41 @@ const Lab = () => {
 
   return (
     <Layout hasSider style={{ minHeight: "100vh" }}>
-      <Layout style={{ padding: "24px" }}>
-        <Content>
-          <Button type="primary" icon={<PlusOutlined />} onClick={showModal} style={{ marginBottom: 24 }}>
-            Add Lab
-          </Button>
-          <div className="labs-container">
-            {labs.map((lab) => (
-              <Card
-                key={lab.id}
-                className="lab-card"
-                actions={[
-                  <Button icon={<UserOutlined />} key="staff">Staff: {lab.staffName}</Button>,
-                  <Button icon={<DesktopOutlined />} key="system">Systems: {lab.systemCount}</Button>,
-                ]}
-                onClick={() => redirectToDetails(lab)}
-              >
-                <Card.Meta
-                  title={lab.name}
-                  description={lab.description}
-                />
-              </Card>
-            ))}
-          </div>
-          <Modal
-            title="Add New Lab"
-            visible={isModalVisible}
-            footer={null}
-            onCancel={handleCancel}
-          >
-            <AddLabForm onFinish={handleOk} />
-          </Modal>
-        </Content>
-      </Layout>
+      <Navbar> 
+        <Layout style={{ padding: "24px" }}>
+          <Content>
+            <Button type="primary" icon={<PlusOutlined />} onClick={showModal} style={{ marginBottom: 24 }}>
+              Add Lab
+            </Button>
+            <div className="labs-container">
+              {labs.map((lab) => (
+                <Card
+                  key={lab.id}
+                  className="lab-card"
+                  actions={[
+                    <Button icon={<UserOutlined />} key="staff">Staff: {lab.staffName}</Button>,
+                    <Button icon={<DesktopOutlined />} key="system">Systems: {lab.systemCount}</Button>,
+                  ]}
+                  onClick={() => redirectToDetails(lab)}
+                >
+                  <Card.Meta
+                    title={lab.name}
+                    description={lab.description}
+                  />
+                </Card>
+              ))}
+            </div>
+            <Modal
+              title="Add New Lab"
+              visible={isModalVisible}
+              footer={null}
+              onCancel={handleCancel}
+            >
+              <AddLabForm onFinish={handleOk} />
+            </Modal>
+          </Content>
+        </Layout>
+      </Navbar>
     </Layout>
   );
 };

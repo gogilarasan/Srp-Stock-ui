@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Typography, Table, Button, Modal, Form, Input, Space, message, Select, FloatButton } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined, DownloadOutlined } from "@ant-design/icons";
+import Navbar from "../../Component/Navbar";
 import axios from "axios";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
@@ -141,62 +142,64 @@ const Stock = () => {
 
     return (
         <Layout>
-            <Content style={{ padding: "24px" }}>
-                <div style={{ marginBottom: 16 }}>
-                    <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>Add Stock</Button>
-                    <FloatButton icon={<DownloadOutlined />} onClick={handleDownload}>Download</FloatButton>
-                </div>
-                <Table dataSource={data} columns={columns} />
-                <Modal
-                    title={selectedItem ? "Edit Stock" : "Add Stock"}
-                    visible={isModalVisible}
-                    onOk={handleOk}
-                    onCancel={handleCancel}
-                >
-                    <Form form={form} layout="vertical">
-                        <Form.Item label="Stock Register Page No." name="stockRegisterPageNo" rules={[{ required: true, message: "Please enter Stock Register Page No." }]}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label="Stock Register Sl.No." name="stockRegisterSlNo" rules={[{ required: true, message: "Please enter Stock Register Sl.No." }]}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please enter Description." }]}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label="Book Figure Quantity" name="bookFigureQuantity" rules={[{ required: true, message: "Please enter Book Figure Quantity." }]}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label="Book Stock Value Rs." name="bookStockValueRs" rules={[{ required: true, message: "Please enter Book Stock Value Rs." }]}>
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label="Issued to / Remarks" name="issuedToRemarks">
-                            <Input />
-                        </Form.Item>
-                        <Form.Item label="Location" name="location">
-                            <Input />
-                        </Form.Item>
-                    </Form>
-                </Modal>
-                <Modal
-                    title="Download Options"
-                    visible={downloadModalVisible}
-                    onOk={handleDownloadConfirm}
-                    onCancel={() => setDownloadModalVisible(false)}
-                >
-                    <Form layout="vertical">
-                        <Form.Item label="File Name">
-                            <Input value={downloadFileName} onChange={(e) => setDownloadFileName(e.target.value)} />
-                        </Form.Item>
-                        <Form.Item label="File Type">
-                            <Select value={downloadFileType} onChange={(value) => setDownloadFileType(value)}>
-                                <Option value="json">JSON</Option>
-                                <Option value="csv">CSV</Option>
-                                <Option value="xlsx">Excel</Option>
-                            </Select>
-                        </Form.Item>
-                    </Form>
-                </Modal>
-            </Content>
+            <Navbar>
+                <Content style={{ padding: "24px" }}>
+                    <div style={{ marginBottom: 16 }}>
+                        <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>Add Stock</Button>
+                        <FloatButton icon={<DownloadOutlined />} onClick={handleDownload}>Download</FloatButton>
+                    </div>
+                    <Table dataSource={data} columns={columns} />
+                    <Modal
+                        title={selectedItem ? "Edit Stock" : "Add Stock"}
+                        visible={isModalVisible}
+                        onOk={handleOk}
+                        onCancel={handleCancel}
+                    >
+                        <Form form={form} layout="vertical">
+                            <Form.Item label="Stock Register Page No." name="stockRegisterPageNo" rules={[{ required: true, message: "Please enter Stock Register Page No." }]}>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item label="Stock Register Sl.No." name="stockRegisterSlNo" rules={[{ required: true, message: "Please enter Stock Register Sl.No." }]}>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please enter Description." }]}>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item label="Book Figure Quantity" name="bookFigureQuantity" rules={[{ required: true, message: "Please enter Book Figure Quantity." }]}>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item label="Book Stock Value Rs." name="bookStockValueRs" rules={[{ required: true, message: "Please enter Book Stock Value Rs." }]}>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item label="Issued to / Remarks" name="issuedToRemarks">
+                                <Input />
+                            </Form.Item>
+                            <Form.Item label="Location" name="location">
+                                <Input />
+                            </Form.Item>
+                        </Form>
+                    </Modal>
+                    <Modal
+                        title="Download Options"
+                        visible={downloadModalVisible}
+                        onOk={handleDownloadConfirm}
+                        onCancel={() => setDownloadModalVisible(false)}
+                    >
+                        <Form layout="vertical">
+                            <Form.Item label="File Name">
+                                <Input value={downloadFileName} onChange={(e) => setDownloadFileName(e.target.value)} />
+                            </Form.Item>
+                            <Form.Item label="File Type">
+                                <Select value={downloadFileType} onChange={(value) => setDownloadFileType(value)}>
+                                    <Option value="json">JSON</Option>
+                                    <Option value="csv">CSV</Option>
+                                    <Option value="xlsx">Excel</Option>
+                                </Select>
+                            </Form.Item>
+                        </Form>
+                    </Modal>
+                </Content>
+            </Navbar>
         </Layout>
     );
 };

@@ -11,26 +11,22 @@ import Timetable from './Container/Timetable/TimeTable';
 import Report from './Container/Report/Report';
 import Staff from './Container/Staff/Staff';
 import './App.css';
-import Navbar from "../src/Component/Navbar"; 
 
 function App() {
   return (
     <Router>
-      <div>
-        <Navbar />
-        <Routes>
-          <Route path='/' element={<Login />} />
-          <Route path='/Home' element={<Home />} />
-          <Route path='/Stock' element={<Stock />} />
-          <Route path='/System' element={<System />} />
-          <Route path='/Lab' element={<Lab />} />
-          <Route path='/Lab/Labdet' element={<LabDetail />} />
-          <Route path='/Research' element={<Research />} />
-          <Route path='/Staff' element={<Staff />} />
-          <Route path='/Timetable' element={<Timetable />} />
-          <Route path='/Report' element={<Report />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path='/' element={<Login />} />
+        <Route path='/Home' element={<Home />} />
+        <Route path='/Stock' element={<Stock />} />
+        <Route path='/System' element={<System />} />
+        <Route path='/Lab' element={<Lab />} />
+        <Route path='/Lab/Labdet' element={<LabDetail />} />
+        <Route path='/Research' element={<Research />} />
+        <Route path='/Staff' element={<Staff />} />
+        <Route path='/Timetable' element={<Timetable />} />
+        <Route path='/Report' element={<Report />} />
+      </Routes>
     </Router>
   );
 }
