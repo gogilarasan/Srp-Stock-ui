@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Layout, Typography, Card, Modal, Button, Form, Input, Space } from "antd";
+import { Layout, Typography, Card, Modal, Button, Form, Input } from "antd";
 import { PlusOutlined, UserOutlined, DesktopOutlined } from "@ant-design/icons";
-import Navbar from "../../Component/Navbar";
 import { useNavigate } from "react-router-dom";
+import './Lab.css'
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -39,33 +39,29 @@ const Lab = () => {
     navigate(`/Lab/Labdet?lab=${lab.id}`);
   };
 
-
   return (
     <Layout hasSider style={{ minHeight: "100vh" }}>
-      <Navbar />
-
-      <Layout style={{ maxHeight: "100vh", overflowY: "auto" }}>
-        <Content style={{ padding: "24px", minHeight: "280px", overflowY: "auto" }}>
+      <Layout style={{ padding: "24px" }}>
+        <Content>
           <Button type="primary" icon={<PlusOutlined />} onClick={showModal} style={{ marginBottom: 24 }}>
             Add Lab
           </Button>
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
+          <div className="labs-container">
             {labs.map((lab) => (
               <Card
                 key={lab.id}
-                style={{ width: "100%", margin: "0 0 16px" }}
+                className="lab-card"
                 actions={[
                   <Button icon={<UserOutlined />} key="staff">Staff: {lab.staffName}</Button>,
                   <Button icon={<DesktopOutlined />} key="system">Systems: {lab.systemCount}</Button>,
                 ]}
-                onDoubleClick={() => redirectToDetails(lab)}
+                onClick={() => redirectToDetails(lab)}
               >
                 <Card.Meta
-                  title={<div style={{ fontFamily: "Arial", fontSize: "20px" }}>{lab.name}</div>}
-                  description={<div style={{ fontFamily: "Arial", fontSize: "16px" }}>{lab.description}</div>}
+                  title={lab.name}
+                  description={lab.description}
                 />
               </Card>
-
             ))}
           </div>
           <Modal

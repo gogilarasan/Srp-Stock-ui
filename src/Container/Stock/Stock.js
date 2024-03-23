@@ -1,25 +1,32 @@
-import React, { useState } from "react";
-import { Layout, Typography, Table, Button, Modal, Form, Input, Space } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import Navbar from "../../Component/Navbar";
+import React, { useState, useEffect } from "react";
+import { Layout, Typography, Table, Button, Modal, Form, Input, Space, message, Select, FloatButton } from "antd";
+import { PlusOutlined, EditOutlined, DeleteOutlined, DownloadOutlined } from "@ant-design/icons";
+import axios from "axios";
+import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
 
 const { Content } = Layout;
 const { Title } = Typography;
+const { Option } = Select;
 
 const Stock = () => {
     const [data, setData] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
     const [selectedItem, setSelectedItem] = useState(null);
+    const [fileFormat, setFileFormat] = useState("json");
+    const [downloadModalVisible, setDownloadModalVisible] = useState(false);
+    const [downloadFileName, setDownloadFileName] = useState("");
+    const [downloadFileType, setDownloadFileType] = useState("json");
 
     const columns = [
-        { title: "S.No", dataIndex: "sNo", key: "sNo" },
-        { title: "Stock Register Page No.", dataIndex: "pageNo", key: "pageNo" },
-        { title: "Stock Register Sl.No.", dataIndex: "slNo", key: "slNo" },
+        { title: "ID", dataIndex: "id", key: "id" },
+        { title: "Stock Register Page No.", dataIndex: "stockRegisterPageNo", key: "stockRegisterPageNo" },
+        { title: "Stock Register Sl.No.", dataIndex: "stockRegisterSlNo", key: "stockRegisterSlNo" },
         { title: "Description", dataIndex: "description", key: "description" },
-        { title: "Book Figure Quantity", dataIndex: "quantity", key: "quantity" },
-        { title: "Book Stock Value Rs.", dataIndex: "stockValue", key: "stockValue" },
-        { title: "Issed to / Remarks", dataIndex: "remarks", key: "remarks" },
+        { title: "Book Figure Quantity", dataIndex: "bookFigureQuantity", key: "bookFigureQuantity" },
+        { title: "Book Stock Value Rs.", dataIndex: "bookStockValueRs", key: "bookStockValueRs" },
+        { title: "Issued to / Remarks", dataIndex: "issuedToRemarks", key: "issuedToRemarks" },
         { title: "Location", dataIndex: "location", key: "location" },
         {
             title: "Actions",
@@ -34,86 +41,44 @@ const Stock = () => {
         },
     ];
 
-    const dummyData = [
-      {
-        sNo: 1,
-        pageNo: 1,
-        slNo: 1,
-        description: "NAME BORAD",
-        quantity: 2,
-        stockValue: "32,625.00",
-        remarks: "Transferred to FSR",
-        location: "OFFICE",
-      },
-      {
-        sNo: 2,
-        pageNo: 1,
-        slNo: 2,
-        description: "500GB SATA LAPTOP HDD",
-        quantity: 1,
-        stockValue: "3,100.00",
-        remarks: "USEAGE OF LAPTOP FOR HOD LAPTOP HANDOVER TO DCSE",
-        location: "DCSE",
-      },
-      {
-        sNo: 3,
-        pageNo: 1,
-        slNo: 3,
-        description: "XEROX 5225 DIGITAL COPIER",
-        quantity: 1,
-        stockValue: "1,42,272.00",
-        remarks: "Disposed under buyback for new Cannon Xerox Machine",
-        location: "NA",
-      },
-      {
-        sNo: 4,
-        pageNo: 1,
-        slNo: 3,
-        description: "STABILIZER",
-        quantity: 1,
-        stockValue: "",
-        remarks: "",
-        location: "",
-      },
-      {
-        sNo: 5,
-        pageNo: 1,
-        slNo: 3,
-        description: "XEROX LASER PRINTER 3117",
-        quantity: 1,
-        stockValue: "",
-        remarks: "Item Condominated in 2020",
-        location: "TF",
-      },
-      {
-        sNo: 6,
-        pageNo: 2,
-        slNo: 4,
-        description: "HP LASERJET 2035 PRINTER",
-        quantity: 1,
-        stockValue: "16,500.00",
-        remarks: "Dr. L. Sairamesh",
-        location: "SF",
-      },
-    ];
-    
+    const fetchData = async () => {
+        try {
+            const response = await axios.post("http://localhost:3000/admin/get_all_stock_depts");
+            setData(response.data);
+        } catch (error) {
+            console.error("Error fetching data: ", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const showModal = () => {
         setIsModalVisible(true);
     };
 
-    const handleOk = () => {
-        form.validateFields().then(values => {
+    const handleOk = async () => {
+        try {
+            const values = await form.validateFields();
+            let response;
             if (selectedItem) {
-                const newData = data.map(item => item.key === selectedItem.key ? { ...item, ...values } : item);
-                setData(newData);
+                response = await axios.post("http://localhost:3000/admin/update_stock_dept", { ...values, deptId: selectedItem.id });
+            } else {
+                response = await axios.post("http://localhost:3000/admin/create_stock_dept", values);
+            }
+            if (response.data.message === "Stock department created successfully" || response.data.message === "Stock department updated successfully") {
+                fetchData();
+                form.resetFields();
+                setIsModalVisible(false);
                 setSelectedItem(null);
             } else {
-                setData([...data, { key: data.length + 1, ...values }]);
+                message.error("Failed to save data");
             }
-            form.resetFields();
-            setIsModalVisible(false);
-        });
+        } catch (error) {
+            console.error("Error saving data: ", error);
+            message.error("Failed to save data");
+        }
     };
 
     const handleCancel = () => {
@@ -128,56 +93,110 @@ const Stock = () => {
         setIsModalVisible(true);
     };
 
-    const handleDelete = (record) => {
-        setData(data.filter(item => item.key !== record.key));
+    const handleDelete = async (record) => {
+        try {
+            const response = await axios.post("http://localhost:3000/admin/delete_stock_dept", { deptId: record.id });
+            if (response.data.message === "Stock department deleted successfully") {
+                fetchData();
+            } else {
+                message.error("Failed to delete data");
+            }
+        } catch (error) {
+            console.error("Error deleting data: ", error);
+            message.error("Failed to delete data");
+        }
+    };
+
+    const handleDownload = () => {
+        setDownloadModalVisible(true);
+    };
+
+    const handleDownloadConfirm = () => {
+        let blob;
+        if (downloadFileType === "json") {
+            const jsonData = JSON.stringify(data, null, 2);
+            blob = new Blob([jsonData], { type: "application/json" });
+        } else if (downloadFileType === "csv") {
+            const csvData = convertToCSV(data);
+            blob = new Blob([csvData], { type: "text/csv" });
+        } else if (downloadFileType === "xlsx") {
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Stocks");
+            const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+            blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+        }
+
+        if (blob) {
+            saveAs(blob, `${downloadFileName}.${downloadFileType}`);
+            setDownloadModalVisible(false);
+        }
+    };
+
+    const convertToCSV = (data) => {
+        const header = Object.keys(data[0]).join(",");
+        const body = data.map(item => Object.values(item).join(",")).join("\n");
+        return `${header}\n${body}`;
     };
 
     return (
-        <Layout hasSider style={{ minHeight: "100vh" }}>
-            <Navbar />
-            <Layout>
-                <Content style={{ padding: "24px", minHeight: "280px" }}>
-                    <div style={{ marginBottom: 16 }}>
-                        <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>
-                            Add Stock
-                        </Button>
-                    </div>
-                    <Table dataSource={dummyData} columns={columns} />
-                    <Modal
-                        title={selectedItem ? "Edit Stock" : "Add Stock"}
-                        visible={isModalVisible}
-                        onOk={handleOk}
-                        onCancel={handleCancel}
-                    >
-                        <Form form={form} layout="vertical">
-                            <Form.Item label="S.No" name="sNo" rules={[{ required: true, message: "Please enter S.No" }]}>
-                                <Input />
-                            </Form.Item>
-                            <Form.Item label="Stock Register Page No." name="pageNo">
-                                <Input />
-                            </Form.Item>
-                            <Form.Item label="Stock Register Sl.No." name="slNo">
-                                <Input />
-                            </Form.Item>
-                            <Form.Item label="Description" name="description">
-                                <Input />
-                            </Form.Item>
-                            <Form.Item label="Book Figure Quantity" name="quantity">
-                                <Input />
-                            </Form.Item>
-                            <Form.Item label="Book Stock Value Rs." name="stockValue">
-                                <Input />
-                            </Form.Item>
-                            <Form.Item label="Issed to / Remarks" name="remarks">
-                                <Input />
-                            </Form.Item>
-                            <Form.Item label="Location" name="location">
-                                <Input />
-                            </Form.Item>
-                        </Form>
-                    </Modal>
-                </Content>
-            </Layout>
+        <Layout>
+            <Content style={{ padding: "24px" }}>
+                <div style={{ marginBottom: 16 }}>
+                    <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>Add Stock</Button>
+                    <FloatButton icon={<DownloadOutlined />} onClick={handleDownload}>Download</FloatButton>
+                </div>
+                <Table dataSource={data} columns={columns} />
+                <Modal
+                    title={selectedItem ? "Edit Stock" : "Add Stock"}
+                    visible={isModalVisible}
+                    onOk={handleOk}
+                    onCancel={handleCancel}
+                >
+                    <Form form={form} layout="vertical">
+                        <Form.Item label="Stock Register Page No." name="stockRegisterPageNo" rules={[{ required: true, message: "Please enter Stock Register Page No." }]}>
+                            <Input />
+                        </Form.Item>
+                        <Form.Item label="Stock Register Sl.No." name="stockRegisterSlNo" rules={[{ required: true, message: "Please enter Stock Register Sl.No." }]}>
+                            <Input />
+                        </Form.Item>
+                        <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please enter Description." }]}>
+                            <Input />
+                        </Form.Item>
+                        <Form.Item label="Book Figure Quantity" name="bookFigureQuantity" rules={[{ required: true, message: "Please enter Book Figure Quantity." }]}>
+                            <Input />
+                        </Form.Item>
+                        <Form.Item label="Book Stock Value Rs." name="bookStockValueRs" rules={[{ required: true, message: "Please enter Book Stock Value Rs." }]}>
+                            <Input />
+                        </Form.Item>
+                        <Form.Item label="Issued to / Remarks" name="issuedToRemarks">
+                            <Input />
+                        </Form.Item>
+                        <Form.Item label="Location" name="location">
+                            <Input />
+                        </Form.Item>
+                    </Form>
+                </Modal>
+                <Modal
+                    title="Download Options"
+                    visible={downloadModalVisible}
+                    onOk={handleDownloadConfirm}
+                    onCancel={() => setDownloadModalVisible(false)}
+                >
+                    <Form layout="vertical">
+                        <Form.Item label="File Name">
+                            <Input value={downloadFileName} onChange={(e) => setDownloadFileName(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label="File Type">
+                            <Select value={downloadFileType} onChange={(value) => setDownloadFileType(value)}>
+                                <Option value="json">JSON</Option>
+                                <Option value="csv">CSV</Option>
+                                <Option value="xlsx">Excel</Option>
+                            </Select>
+                        </Form.Item>
+                    </Form>
+                </Modal>
+            </Content>
         </Layout>
     );
 };

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Typography, Card, Menu, Dropdown, Table, Modal } from "antd";
 import { EllipsisOutlined, UserOutlined, DesktopOutlined } from "@ant-design/icons";
-import Navbar from "../../Component/Navbar";
 import { useParams } from "react-router-dom";
 
 const { Content } = Layout;
@@ -125,7 +124,6 @@ const Details = () => {
 
     return (
         <Layout hasSider style={{ minHeight: "100vh" }}>
-            <Navbar />
             <Layout>
                 <Content style={{ padding: "24px", minHeight: "280px" }}>
                     {lab && (

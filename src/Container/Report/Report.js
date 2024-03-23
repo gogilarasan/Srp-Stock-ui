@@ -1,9 +1,10 @@
 import React from "react";
 import { Layout, Typography } from "antd";
+
 const { Content } = Layout;
 const { Title } = Typography;
 
-const Home = () => {
+const Report = () => {
   return (
     <Layout hasSider style={{ minHeight: "100vh" }}>
       <Layout>
@@ -15,4 +16,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Report;
