@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Menu, Button, Avatar } from "antd";
+import { Layout, Menu, Button,Tooltip } from "antd";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   HomeOutlined,
@@ -56,8 +56,8 @@ const Navbar = ({ children }) => {
           height: "100vh",
           background: "#fff"
         }}
-        breakpoint="md"  // Set the breakpoint to md (default is lg)
-        collapsedWidth={60} // Hide the sidebar when collapsed
+        breakpoint="md"
+        collapsedWidth={60}
         onBreakpoint={onBreakpoint}
       >
         <Menu
@@ -107,24 +107,23 @@ const Navbar = ({ children }) => {
                 </div>
               </Link>
             </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                onClick={handleLogout}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  marginRight: "10px"
-                }}
-              >
-                <LogoutOutlined style={{ fontSize: "24px" }} />
-                <span style={{ fontSize: "16px", fontWeight: "bold", marginLeft: "5px" }}>Logout</span>
-              </div>
+            <div
+              onClick={handleLogout}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                cursor: "pointer",
+                marginRight: "10px"
+              }}
+            >
+              <Tooltip title="Logout">
+                <LogoutOutlined style={{ fontSize: "18px", marginRight: "5px", border: "1px solid #000", padding: "4px", borderRadius: "50%" }} />
+              </Tooltip>
             </div>
           </div>
         </Header>
         <Layout.Content>
-          <div style={{ padding: 24, background: "#fff", minHeight: 360 }}>
+          <div style={{background: "#fff"}}>
             {children}
           </div>
         </Layout.Content>

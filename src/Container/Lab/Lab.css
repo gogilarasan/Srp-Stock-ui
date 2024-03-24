@@ -1,17 +1,16 @@
 .labs-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.lab-card {
+  flex: 1 1 calc(50% - 16px); /* Minimum width of 50% minus gap, can grow and shrink */
+  max-width: calc(50% - 16px); /* Maximum width of 50% minus gap */
+}
+
+@media (max-width: 768px) {
+  .labs-container {
+    flex-direction: column;
   }
-  
-  .lab-card {
-    flex: 1 1 300px; /* Minimum width of 300px, can grow and shrink */
-    max-width: 400px; /* Maximum width of 400px */
-  }
-  
-  @media (max-width: 768px) {
-    .labs-container {
-      flex-direction: column;
-    }
-  }
-  
+}

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Typography, Table, Button, Modal, Form, Input, Space, message, Select, FloatButton } from "antd";
+import { Layout, Typography, Table, Button, Modal, Form, Input, Space, message, Select, FloatButton, Tooltip } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined, DownloadOutlined } from "@ant-design/icons";
 import Navbar from "../../Component/Navbar";
 import axios from "axios";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
+import "./Stocks.css"
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -21,7 +22,6 @@ const Stock = () => {
     const [downloadFileType, setDownloadFileType] = useState("json");
 
     const columns = [
-        { title: "ID", dataIndex: "id", key: "id" },
         { title: "Stock Register Page No.", dataIndex: "stockRegisterPageNo", key: "stockRegisterPageNo" },
         { title: "Stock Register Sl.No.", dataIndex: "stockRegisterSlNo", key: "stockRegisterSlNo" },
         { title: "Description", dataIndex: "description", key: "description" },
@@ -35,8 +35,12 @@ const Stock = () => {
             key: "actions",
             render: (text, record) => (
                 <Space>
-                    <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>Edit</Button>
-                    <Button icon={<DeleteOutlined />} onClick={() => handleDelete(record)}>Delete</Button>
+                    <Button onClick={() => handleEdit(record)} style={{ color: 'blue' }}>
+                        <EditOutlined /> Edit
+                    </Button>
+                    <Button type="danger" onClick={() => handleDelete(record)} style={{ color: 'red' }}>
+                        <DeleteOutlined /> Delete
+                    </Button>
                 </Space>
             ),
         },
@@ -146,9 +150,15 @@ const Stock = () => {
                 <Content style={{ padding: "24px" }}>
                     <div style={{ marginBottom: 16 }}>
                         <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>Add Stock</Button>
-                        <FloatButton icon={<DownloadOutlined />} onClick={handleDownload}>Download</FloatButton>
+                        <FloatButton icon={<DownloadOutlined />} onClick={handleDownload} tooltip={<div>Download</div>} />
                     </div>
-                    <Table dataSource={data} columns={columns} />
+                    <Layout style={{ maxHeight: "80vh", overflowY: "auto" }} >
+                        <Table
+                            dataSource={data}
+                            columns={columns}
+                            pagination={{ pageSize: 20 }}
+                        />
+                    </Layout>
                     <Modal
                         title={selectedItem ? "Edit Stock" : "Add Stock"}
                         visible={isModalVisible}
