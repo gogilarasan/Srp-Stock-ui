@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Typography, Card, Modal, Button, Form, Input, message, Menu, Dropdown } from "antd";
+import { Layout, Typography, Card, Modal, Button, Form, Input, message, Menu, Dropdown, Popconfirm, Tooltip } from "antd";
 import { PlusOutlined, UserOutlined, EllipsisOutlined, SearchOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import Navbar from "../../Component/Navbar";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import './Lab.css';
 
 const { Content } = Layout;
 const { Title } = Typography;
+const { Meta } = Card;
 
 const Lab = () => {
   const [labs, setLabs] = useState([]);
@@ -77,8 +78,9 @@ const Lab = () => {
 
   const handleDelete = async (lab) => {
     try {
+      console.log(lab);
       const response = await axios.post("http://localhost:3000/admin/delete_lab", {
-        lab_id: lab.lab_id
+        labId: lab.lab_id
       });
       if (response.status === 200) {
         message.success("Lab deleted successfully");
@@ -96,25 +98,28 @@ const Lab = () => {
   };
 
   useEffect(() => {
-    console.log("Selected Lab after modal closed:", selectedLab);
   }, [selectedLab]);
-
-
-
 
   const redirectToDetails = (lab) => {
     navigate(`/Lab/Labdet?lab=${lab.lab_id}`);
   };
 
   const menu = (lab) => (
-    <Menu>
-      <Menu.Item key="edit" onClick={() => handleEdit(lab)}>
-        <EditOutlined />
+    <Menu style={{ border: '1px solid #f0f0f0', borderRadius: '4px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}>
+      <Menu.Item key="edit" onClick={() => handleEdit(lab)} style={{ padding: '8px 16px', fontSize: '14px', lineHeight: '1.5' }}>
+        <EditOutlined style={{ marginRight: '8px' }} />
         Edit
       </Menu.Item>
-      <Menu.Item key="delete" onClick={() => handleDelete(lab)}>
-        <DeleteOutlined />
-        Delete
+      <Menu.Item key="delete" style={{ padding: '8px 16px', fontSize: '14px', lineHeight: '1.5' }}>
+        <Popconfirm
+          title="Are you sure you want to delete this lab?"
+          onConfirm={() => handleDelete(lab)}
+          okText="Yes"
+          cancelText="No"
+        >
+          <DeleteOutlined style={{ marginRight: '8px' }} />
+          Delete
+        </Popconfirm>
       </Menu.Item>
     </Menu>
   );
@@ -130,18 +135,24 @@ const Lab = () => {
             <div className="labs-container">
               {labs.map((lab) => (
                 <Card
-                  key={lab.id}
-                  className="lab-card"
+                  style={{ width: 270, borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
+                  /*cover={
+                    <img
+                      alt="Lab"
+                      src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                      style={{ borderRadius: '8px 8px 0 0' }}
+                    />
+                  }*/
                   actions={[
-                    <Button icon={<UserOutlined />} key="staff">Staff: {lab.lab_incharge}</Button>,
+                    <Tooltip title={lab.lab_incharge}> <UserOutlined key="staff" /></Tooltip>,
+                    <SearchOutlined key="view" onClick={() => redirectToDetails(lab)} />,
                     <Dropdown overlay={menu(lab)} trigger={['click']} placement="bottomRight">
-                      <Button icon={<EllipsisOutlined />} />
+                      <EllipsisOutlined />
                     </Dropdown>,
-                    <Button icon={<SearchOutlined />} key="view" onClick={() => redirectToDetails(lab)}>View</Button>,
                   ]}
                 >
-                  <Card.Meta
-                    title={lab.lab_name.toUpperCase()}
+                  <Meta
+                    title={<span style={{ fontSize: '20px', fontWeight: 'bold' }}>{lab.lab_name.toUpperCase()}</span>}
                     description={lab.lab_description}
                   />
                 </Card>

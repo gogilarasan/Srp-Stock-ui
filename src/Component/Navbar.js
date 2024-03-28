@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Layout, Menu, Button,Tooltip } from "antd";
+import React, { useState } from "react";
+import { Layout, Menu, Button, Tooltip } from "antd";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   HomeOutlined,
@@ -19,15 +19,12 @@ const { Header, Sider } = Layout;
 
 const Navbar = ({ children }) => {
   const location = useLocation();
-  const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const [collapsed, setCollapsed] = useState(() => {
     const isCollapsed = localStorage.getItem("collapsed");
-    if (isCollapsed === "true") {
-      setCollapsed(true);
-    }
-  }, []);
+    return isCollapsed === "true";
+  });
 
   const toggleCollapsed = () => {
     const newState = !collapsed;
@@ -75,13 +72,13 @@ const Navbar = ({ children }) => {
             <Link to="/Stock">Stock</Link>
           </Menu.Item>
           <Menu.Item key="/System" icon={<DesktopOutlined />}>
-            <Link to="/System">Systems</Link>
-          </Menu.Item>
-          <Menu.Item key="/Research" icon={<BookOutlined />}>
-            <Link to="/Research">Research</Link>
+            <Link to="/System">System Stocks</Link>
           </Menu.Item>
           <Menu.Item key="/Staff" icon={<TeamOutlined />}>
             <Link to="/Staff">Staff</Link>
+          </Menu.Item>
+          <Menu.Item key="/Research" icon={<BookOutlined />}>
+            <Link to="/Research">Research</Link>
           </Menu.Item>
           <Menu.Item key="/TimeTable" icon={<ScheduleOutlined />}>
             <Link to="/TimeTable">TimeTable</Link>
@@ -92,8 +89,8 @@ const Navbar = ({ children }) => {
         </Menu>
       </Sider>
       <Layout>
-        <Header style={{ background: "#fff", padding: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px" }}>
+        <Header style={{ background: "#fff", padding: 0, height: "64px", lineHeight: "64px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px", color: "#000", height: "100%" }}>
             <div style={{ display: "flex", alignItems: "center" }}>
               <Button
                 className="trigger"
@@ -101,11 +98,6 @@ const Navbar = ({ children }) => {
                 onClick={toggleCollapsed}
                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
               />
-              <Link to="/">
-                <div style={{ color: "#1890ff", fontSize: "24px", fontWeight: "bold", marginBottom: "10px" }}>
-                  FUSIFU
-                </div>
-              </Link>
             </div>
             <div
               onClick={handleLogout}
@@ -113,17 +105,18 @@ const Navbar = ({ children }) => {
                 display: "flex",
                 alignItems: "center",
                 cursor: "pointer",
-                marginRight: "10px"
+                marginRight: "10px",
+                flexShrink: 0
               }}
             >
               <Tooltip title="Logout">
-                <LogoutOutlined style={{ fontSize: "18px", marginRight: "5px", border: "1px solid #000", padding: "4px", borderRadius: "50%" }} />
+                <LogoutOutlined style={{ fontSize: "18px", marginRight: "5px", color: "#000", padding: "4px", borderRadius: "50%" }} />
               </Tooltip>
             </div>
           </div>
         </Header>
         <Layout.Content>
-          <div style={{background: "#fff"}}>
+          <div style={{ background: "#fff" }}>
             {children}
           </div>
         </Layout.Content>

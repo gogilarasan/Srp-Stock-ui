@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Typography, Table, Button, Modal, Form, Input, Space, message, Select, FloatButton, Tooltip } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined, DownloadOutlined } from "@ant-design/icons";
+import { Layout, Typography, Table, Button, Modal, Form, Input, Space, message, Select, FloatButton, Tooltip, Upload } from "antd";
+import { PlusOutlined, EditOutlined, DeleteOutlined, DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import Navbar from "../../Component/Navbar";
 import axios from "axios";
 import { saveAs } from 'file-saver';
@@ -20,6 +20,8 @@ const Stock = () => {
     const [downloadModalVisible, setDownloadModalVisible] = useState(false);
     const [downloadFileName, setDownloadFileName] = useState("");
     const [downloadFileType, setDownloadFileType] = useState("json");
+    const [uploadModalVisible, setUploadModalVisible] = useState(false);
+    const [uploadFile, setUploadFile] = useState(null)
 
     const columns = [
         { title: "Stock Register Page No.", dataIndex: "stockRegisterPageNo", key: "stockRegisterPageNo" },
@@ -144,6 +146,53 @@ const Stock = () => {
         return `${header}\n${body}`;
     };
 
+    const handleUpload = async (file) => {
+        setUploadFile(file);
+        setUploadModalVisible(true);
+        handleUploadConfirm();
+    };
+
+    const handleUploadConfirm = async () => {
+        if (!uploadFile) {
+            message.error("Please select a file");
+            return;
+        }
+
+        try {
+            const fileReader = new FileReader();
+            fileReader.onload = (e) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: "array" });
+                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                const records = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                records.shift();
+                processAndStoreData(records);
+            };
+            fileReader.readAsArrayBuffer(uploadFile.originFileObj);
+        } catch (error) {
+            console.error("Error processing file: ", error);
+            message.error("Failed to process file");
+        }
+
+        setUploadModalVisible(false);
+    };
+
+    const processAndStoreData = async (records) => {
+        try {
+            const response = await axios.post("http://localhost:3000/admin/bulk_create_stock_dept", {records});
+            if (response.data.message === "Bulk stock departments created successfully") {
+                fetchData();
+                message.success("Bulk data imported successfully");
+            } else {
+                message.error("Failed to import bulk data");
+            }
+        } catch (error) {
+            console.error("Error importing bulk data: ", error);
+            message.error("Failed to import bulk data");
+        }
+    };
+
+
     return (
         <Layout>
             <Navbar>
@@ -151,6 +200,9 @@ const Stock = () => {
                     <div style={{ marginBottom: 16 }}>
                         <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>Add Stock</Button>
                         <FloatButton icon={<DownloadOutlined />} onClick={handleDownload} tooltip={<div>Download</div>} />
+                        <Upload accept=".xlsx" beforeUpload={handleUpload}>
+                            <Button icon={<UploadOutlined />} style={{ marginLeft: 8 }}>Bulk Import</Button>
+                        </Upload>
                     </div>
                     <Layout style={{ maxHeight: "80vh", overflowY: "auto" }} >
                         <Table

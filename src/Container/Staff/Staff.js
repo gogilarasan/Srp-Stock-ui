@@ -1,11 +1,13 @@
+// Existing imports...
 import React, { useState, useEffect } from "react";
-import { Layout, Typography, Table, Button, Modal, Form, Input, Avatar, message } from "antd";
+import { Layout, Typography, Table, Button, Modal, Form, Input, message, Select } from "antd";
 import Navbar from "../../Component/Navbar";
-import { UserOutlined, SettingOutlined, EditOutlined, EllipsisOutlined, ExclamationCircleOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditOutlined, ExclamationCircleOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 
 const { Content } = Layout;
 const { Title } = Typography;
+const { Option } = Select;
 
 const Staff = () => {
   const [visible, setVisible] = useState(false);
@@ -14,9 +16,11 @@ const Staff = () => {
   const [createStaffVisible, setCreateStaffVisible] = useState(false);
   const [updateStaffVisible, setUpdateStaffVisible] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState(null);
+  const [distdetails, setDistdetails] = useState(null);
 
   useEffect(() => {
     fetchStaffList();
+    fetchDistid();
   }, []);
 
   const fetchStaffList = async () => {
@@ -27,6 +31,17 @@ const Staff = () => {
       console.error("Error fetching staff list:", error);
     }
   };
+  const fetchDistid = async () => {
+    try {
+      const response = await axios.post("http://localhost:3000/admin/get_all_stocks");
+      console.log("DistDetails:", response.data);
+      setDistdetails(response.data);
+    } catch (error) {
+      console.log("Error Fetching the DistDetails", error);
+    }
+  }
+
+  console.log(distdetails);
 
   const showModal = () => {
     setVisible(true);
@@ -108,7 +123,17 @@ const Staff = () => {
     });
   };
 
+  const handleDistrictChange = (value) => {
+    console.log("Selected district ID:", value);
+    form.setFieldsValue({ distid: value });
+  };
+
   const columns = [
+    {
+      title: 'SID',
+      dataIndex: 'staffid',
+      key: 'staffid',
+    },
     {
       title: 'Staff Name',
       dataIndex: 'staffname',
@@ -141,7 +166,7 @@ const Staff = () => {
       <Navbar>
         <Layout>
           <Content style={{ padding: "24px", background: "#fff" }}>
-            <Button type="primary" onClick={showCreateModal} style={{ marginBottom: 16 }}>
+            <Button type="primary"  icon={<PlusOutlined />} onClick={showCreateModal} style={{ marginBottom: 16 }}>
               Add Staff
             </Button>
             <Layout style={{ maxHeight: "80vh", overflowY: "auto" }} >
@@ -155,8 +180,12 @@ const Staff = () => {
                 <Form.Item label="Staff Name" name="staffname" rules={[{ required: true, message: "Please enter Staff Name" }]}>
                   <Input />
                 </Form.Item>
-                <Form.Item label="District ID" name="distid" rules={[{ required: false, message: "Please enter District ID" }]}>
-                  <Input />
+                <Form.Item label="Dist ID" name="distid" rules={[{ required: false, message: "Please enter District ID" }]}>
+                  <Select onChange={handleDistrictChange}>
+                    {distdetails && distdetails.map(option => (
+                      <Option key={option.dist_id} value={option.dist_id}>{option.dist_id}</Option>
+                    ))}
+                  </Select>
                 </Form.Item>
                 <Form.Item label="Stock Type" name="stock_type" rules={[{ required: false, message: "Please enter Stock Type" }]}>
                   <Input />

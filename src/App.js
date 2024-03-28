@@ -10,6 +10,7 @@ import Stock from './Container/Stock/Stock';
 import Timetable from './Container/Timetable/TimeTable';
 import Report from './Container/Report/Report';
 import Staff from './Container/Staff/Staff';
+import SysStock from './Container/System/Details'
 import './App.css';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path='/Staff' element={<Staff />} />
         <Route path='/Timetable' element={<Timetable />} />
         <Route path='/Report' element={<Report />} />
+        <Route path='/System/SysStocks' element={<SysStock />} />
       </Routes>
     </Router>
   );

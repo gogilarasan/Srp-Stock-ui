@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Typography, Table, Button, Modal, Form, Input, message } from "antd";
+import { Layout, Typography, Table, Button, Modal, Form, Input, message, Select } from "antd";
 import Navbar from "../../Component/Navbar";
-import { PlusOutlined, EditOutlined, DeleteOutlined, DownloadOutlined } from "@ant-design/icons";
+import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { DatePicker } from "antd";
 import moment from "moment";
 
 const { Content } = Layout;
 const { Title } = Typography;
+const { Option } = Select;
 
 const Research = () => {
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
   const [dataSource, setDataSource] = useState([]);
+  const [staffList, setStaffList] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const [distdetails, setDistdetails] = useState(null);
 
   useEffect(() => {
     fetchResearchScholars();
+    fetchDistid();
+    fetchStaffList();
   }, []);
 
   const fetchResearchScholars = async () => {
@@ -26,6 +31,15 @@ const Research = () => {
       setDataSource(response.data);
     } catch (error) {
       console.error("Error fetching research scholars:", error);
+    }
+  };
+
+  const fetchStaffList = async () => {
+    try {
+      const response = await axios.post("http://localhost:3000/admin/get_all_staffs");
+      setStaffList(response.data);
+    } catch (error) {
+      console.error("Error fetching staff list:", error);
     }
   };
 
@@ -39,6 +53,16 @@ const Research = () => {
     setVisible(false);
     form.resetFields();
   };
+
+  const fetchDistid = async () => {
+    try {
+      const response = await axios.post("http://localhost:3000/admin/get_all_stocks");
+      console.log("DistDetails:", response.data);
+      setDistdetails(response.data);
+    } catch (error) {
+      console.log("Error Fetching the DistDetails", error);
+    }
+  }
 
   const handleAdd = async () => {
     try {
@@ -108,6 +132,16 @@ const Research = () => {
     });
   };
 
+  const handleDistrictChange = (value) => {
+    console.log("Selected district ID:", value);
+    form.setFieldsValue({ distid: value });
+  };
+
+  const handleStaffChange = (value) => {
+    console.log("Selected Staff ID:", value);
+    form.setFieldsValue({ staff_id: value });
+  };
+
   const columns = [
     {
       title: 'Name',
@@ -151,7 +185,7 @@ const Research = () => {
     <Layout >
       <Navbar>
         <Content style={{ padding: "24px" }}>
-          <Button type="primary" onClick={showModal} style={{ marginBottom: 16 }}>
+          <Button type="primary" icon={<PlusOutlined />} onClick={showModal} style={{ marginBottom: 16 }}>
             Add Scholar
           </Button>
           <Layout style={{ maxHeight: "70vh", overflowY: "auto" }} >
@@ -187,19 +221,23 @@ const Research = () => {
               >
                 <DatePicker style={{ width: "100%" }} />
               </Form.Item>
-              <Form.Item
-                label="Dist ID"
-                name="distid"
-                rules={[{ required: true, message: "Please enter dist id" }]}
-              >
-                <Input />
+              <Form.Item label="Dist ID" name="distid" rules={[{ required: false, message: "Please enter District ID" }]}>
+                <Select onChange={handleDistrictChange}>
+                  {distdetails && distdetails.map(option => (
+                    <Option key={option.dist_id} value={option.dist_id}>{option.dist_id}</Option>
+                  ))}
+                </Select>
               </Form.Item>
               <Form.Item
                 label="Staff ID"
                 name="staff_id"
                 rules={[{ required: true, message: "Please enter staff id" }]}
               >
-                <Input />
+               <Select onChange={handleDistrictChange}>
+                  {staffList && staffList.map(option => (
+                    <Option key={option.staffid} value={option.staffid}>{option.staffname}</Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Form>
           </Modal>
