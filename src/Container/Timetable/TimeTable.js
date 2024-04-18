@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Typography, Tabs, Card, Modal, Form, Input, Button, Select, TimePicker, Table } from "antd";
+import { Layout, Typography, Tabs, Card, Modal, Form, Input, Button, Select, TimePicker, Table, Tag, Space, message } from "antd";
 import { ScheduleOutlined } from "@ant-design/icons";
 import Navbar from "../../Component/Navbar";
 import axios from "axios";
@@ -17,6 +17,8 @@ const TimeTable = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [timetableData, setTimetableData] = useState(null);
   const [staffs, setStaffs] = useState([]);
+  const [selectedEntry, setSelectedEntry] = useState([]);
+  const [updateModalVisible, setUpdateModalVisible] = useState(false);
 
   useEffect(() => {
     fetchLabs();
@@ -82,12 +84,22 @@ const TimeTable = () => {
   const handleModalCancel = () => {
     setModalVisible(false);
     form.resetFields();
+    form.setFieldsValue({
+      timings: [null, null], 
+    });
   };
 
   const handleModalSubmit = async (values) => {
-    const startTime = values.timings[0].format("HH:mm");
-    const endTime = values.timings[1].format("HH:mm");
+    const startTime = values.timings && values.timings.length > 0 ? values.timings[0].format("HH:mm") : "";
+    const endTime = values.timings && values.timings.length > 1 ? values.timings[1].format("HH:mm") : "";
+
+    if (!startTime || !endTime) {
+      console.error("Invalid timings provided");
+      return;
+    }
+
     values.timings = `${startTime}-${endTime}`;
+
     try {
       const response = await fetch("http://localhost:3000/admin/create_timetable", {
         method: "POST",
@@ -109,55 +121,179 @@ const TimeTable = () => {
     }
   };
 
-  const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-  const columns = [
-    {
-      title: "Days",
-      dataIndex: "day",
-      key: "day",
-    },
-    {
-      title: "FN",
-      children: [
-        {
-          title: "08:00 - 09:00",
-          dataIndex: "time1",
-          key: "time1",
-        },
-        {
-          title: "09:00 - 10:00",
-          dataIndex: "time2",
-          key: "time2",
-        },
-      ],
-    },
-    {
-      title: "AN",
-      children: [
-        {
-          title: "10:00 - 11:00",
-          dataIndex: "time3",
-          key: "time3",
-        },
-        {
-          title: "11:00 - 12:00",
-          dataIndex: "time4",
-          key: "time4",
-        },
-      ],
-    },
-  ];
+  const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-  const data = timetableData?.filter(entry => entry.lab_id === selectedLab?.lab_id).map(entry => ({
-    key: entry.id,
-    day: entry.day,
-    time1: entry.FN_1,
-    time2: entry.FN_2,
-    time3: entry.AN_1,
-    time4: entry.AN_2,
 
-  })) || [];
+  const handleDelete = async (timetableId) => {
+    try {
+      const response = await axios.post('http://localhost:3000/admin/delete_timetable', {
+        timetable_id: timetableId
+      });
+      if (response.status === 200) {
+        fetchTimeTable();
+        message.success('Timetable deleted successfully');
+      } else {
+        message.error('Failed to delete timetable');
+      }
+    } catch (error) {
+      message.error('An error occurred while deleting timetable');
+      console.error(error);
+    }
+  };
+
+  const handleOpenUpdateModal = (entry) => {
+    setSelectedEntry(entry);
+    setUpdateModalVisible(true);
+    form.setFieldsValue({
+      lab_id: entry.lab_id,
+      subject_id: entry.subject_id,
+      subject_name: entry.subject_name,
+      day: entry.day,
+      session_type: entry.session_type,
+      //timings: [moment(entry.timings.split('-')[0], 'HH:mm'), moment(entry.timings.split('-')[1], 'HH:mm')],
+      subject_teacher: entry.subject_teacher
+    });
+  };
+
+
+  const handleUpdateModalCancel = () => {
+    console.log("Cancelling update modal");
+    setUpdateModalVisible(false);
+    form.resetFields();
+    form.setFieldsValue({
+      timings: [null, null], // Reset the TimePicker.RangePicker values
+    });
+  };
+
+  const handleUpdate = async (values) => {
+    try {
+      const updatedEntry = { ...selectedEntry, ...values };
+      const response = await axios.post('http://localhost:3000/admin/update_timetable', updatedEntry);
+      if (response.status === 200) {
+        message.success('Timetable updated successfully');
+        fetchTimeTable();
+        setUpdateModalVisible(false);
+        form.resetFields();
+      } else {
+        message.error('Failed to update timetable');
+      }
+    } catch (error) {
+      message.error('An error occurred while updating timetable');
+      console.error(error);
+    }
+  };
+
+
+  useEffect(() => {
+    console.log("Selected Entry updated:", selectedEntry);
+  }, [selectedEntry]);
+
+  const getTimetableData = (timetableData, selectedLab) => {
+    const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+    const renderPeriod = (record) => {
+      const day = record && record.day;
+      if (!day || !Array.isArray(timetableData)) {
+        return <span>No data</span>;
+      }
+
+      const periodData = timetableData.filter(
+        entry => entry.day === day && entry.session_type === record.session_type && entry.lab_id === selectedLab?.lab_id
+      );
+
+      const groupedData = {};
+
+      periodData.forEach(entry => {
+        const startTime = entry.timings.split("-")[0];
+
+        if (!groupedData[startTime]) {
+          groupedData[startTime] = [];
+        }
+
+        groupedData[startTime].push(entry);
+      });
+
+      return (
+        <div>
+          {Object.keys(groupedData).map(startTime => (
+            <div key={startTime} style={{ marginBottom: 16 }}>
+              <Space wrap>
+                {groupedData[startTime].map(entry => (
+                  <Card
+                    key={entry.timetable_id}
+                    size="small"
+                    title={entry.subject_name}
+                    style={{ width: 300, marginBottom: 16 }}
+                    actions={[
+                      <Button type="primary" onClick={() => handleOpenUpdateModal(entry)}>Update</Button>,
+                      <Button type="danger" onClick={() => handleDelete(entry.timetable_id)}>Delete</Button>
+                    ]}
+                  >
+                    <p>
+                      <Tag color="#2db7f5">Teacher: {entry.subject_teacher}</Tag>
+                      <Tag color="#87d068">Timings: {entry.timings}</Tag>
+                    </p>
+                  </Card>
+                ))}
+              </Space>
+            </div>
+          ))}
+        </div>
+      );
+
+    };
+
+    const data = daysOfWeek.map(day => {
+      const rowData = {
+        key: day,
+        day,
+      };
+      if (timetableData && selectedLab) {
+        ["FN", "AN"].forEach(sessionType => {
+          const periodData = timetableData.find(entry => entry.day === day && entry.session_type === sessionType && entry.lab_id === selectedLab?.lab_id);
+          rowData[sessionType] = periodData ? { ...periodData } : null;
+        });
+      }
+      return rowData;
+    });
+
+    const columns = [
+      {
+        title: "Days",
+        dataIndex: "day",
+        key: "day",
+      },
+      {
+        title: "FN",
+        children: [
+          {
+            title: "08:15 - 10:15",
+            dataIndex: "FN",
+            key: "FN",
+            render: renderPeriod,
+          },
+        ],
+      },
+      {
+        title: "AN",
+        children: [
+          {
+            title: "13:10 - 15:00",
+            dataIndex: "AN",
+            key: "AN",
+            render: renderPeriod,
+          },
+        ],
+      },
+    ];
+
+    return { columns, data };
+  };
+
+
+  const { columns, data } = getTimetableData(timetableData, selectedLab);
+
 
   return (
     <Layout hasSider>
@@ -241,16 +377,69 @@ const TimeTable = () => {
                     <Option key={lab.lab_id} value={lab.lab_id}>{lab.lab_name}</Option>
                   ))}
                 </Select>
+                <div style={{ height: '450px', overflow: 'auto' }}>
                 <Table
                   columns={columns}
                   dataSource={data}
                   bordered
                   size="small"
                   pagination={false}
-                  scroll={{ x: 'max-content' }}
+                  scroll={{ x: true }}
                 />
+                </div>
               </TabPane>
             </Tabs>
+            <Modal
+              title="Update Timetable Entry"
+              visible={updateModalVisible}
+              onCancel={handleUpdateModalCancel}
+              footer={[
+                <Button key="cancel" onClick={handleUpdateModalCancel}>Cancel</Button>,
+                <Button key="submit" type="primary" onClick={() => form.submit()}>Update</Button>
+              ]}
+            >
+              <Form
+                form={form}
+                onFinish={(values) => handleUpdate(values)}
+                labelCol={{ span: 6 }}
+                wrapperCol={{ span: 18 }}
+                initialValues={selectedEntry}
+              >
+                <Form.Item name="lab_id" label="Lab ID" rules={[{ required: true, message: 'Please enter lab ID!' }]}>
+                  <Select placeholder="Select lab ID">
+                    {labs.map(lab => (
+                      <Option key={lab.lab_id} value={lab.lab_id}>{lab.lab_id}</Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+                <Form.Item name="subject_id" label="Subject ID" rules={[{ required: true, message: 'Please enter subject ID!' }]}>
+                  <Input />
+                </Form.Item>
+                <Form.Item name="subject_name" label="Subject Name" rules={[{ required: true, message: 'Please enter subject name!' }]}>
+                  <Input />
+                </Form.Item>
+                <Form.Item name="day" label="Day" rules={[{ required: true, message: 'Please enter day!' }]}>
+                  <Select placeholder="Select day">
+                    {daysOfWeek.map(day => (
+                      <Option key={day} value={day}>{day}</Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+                <Form.Item name="session_type" label="Session Type" rules={[{ required: true, message: 'Please enter session type!' }]}>
+                  <Select placeholder="Select session type">
+                    <Option value="FN">FN</Option>
+                    <Option value="AN">AN</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item name="subject_teacher" label="Subject Teacher" rules={[{ required: true, message: 'Please select subject teacher!' }]}>
+                  <Select placeholder="Select subject teacher">
+                    {staffs.map(staff => (
+                      <Option key={staff.staffid} value={staff.staffid}>{staff.staffname}</Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Form>
+            </Modal>
           </Content>
         </Layout>
       </Navbar>

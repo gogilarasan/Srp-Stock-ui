@@ -1,4 +1,3 @@
-// Existing imports...
 import React, { useState, useEffect } from "react";
 import { Layout, Typography, Table, Button, Modal, Form, Input, message, Select } from "antd";
 import Navbar from "../../Component/Navbar";
@@ -17,6 +16,7 @@ const Staff = () => {
   const [updateStaffVisible, setUpdateStaffVisible] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState(null);
   const [distdetails, setDistdetails] = useState(null);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     fetchStaffList();
@@ -31,6 +31,7 @@ const Staff = () => {
       console.error("Error fetching staff list:", error);
     }
   };
+
   const fetchDistid = async () => {
     try {
       const response = await axios.post("http://localhost:3000/admin/get_all_stocks");
@@ -40,8 +41,6 @@ const Staff = () => {
       console.log("Error Fetching the DistDetails", error);
     }
   }
-
-  console.log(distdetails);
 
   const showModal = () => {
     setVisible(true);
@@ -128,11 +127,20 @@ const Staff = () => {
     form.setFieldsValue({ distid: value });
   };
 
+  const handleSearch = (value) => {
+    setSearchText(value);
+  };
+
+  const filteredData = staffList.filter((item) =>
+    item.staffname.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   const columns = [
     {
       title: 'SID',
       dataIndex: 'staffid',
       key: 'staffid',
+      sorter: (a, b) => a.staffid - b.staffid,
     },
     {
       title: 'Staff Name',
@@ -143,6 +151,7 @@ const Staff = () => {
       title: 'Dist ID',
       dataIndex: 'distid',
       key: 'distid',
+      sorter: (a, b) => a.distid - b.distid,
     },
     {
       title: 'Stock Type',
@@ -166,11 +175,18 @@ const Staff = () => {
       <Navbar>
         <Layout>
           <Content style={{ padding: "24px", background: "#fff" }}>
-            <Button type="primary"  icon={<PlusOutlined />} onClick={showCreateModal} style={{ marginBottom: 16 }}>
-              Add Staff
-            </Button>
+            <div style={{ marginBottom: 16 }}>
+              <Button type="primary" icon={<PlusOutlined />} onClick={showCreateModal} style={{ marginRight: 16 }}>
+                Add Staff
+              </Button>
+              <Input.Search
+                placeholder="Search Staff"
+                onChange={(e) => handleSearch(e.target.value)}
+                style={{ width: 200 }}
+              />
+            </div>
             <Layout style={{ maxHeight: "80vh", overflowY: "auto" }} >
-              <Table dataSource={staffList} columns={columns} pagination={{ pageSize: 10 }} />
+              <Table dataSource={filteredData} columns={columns} pagination={{ pageSize: 10 }} />
             </Layout>
             <Modal title={createStaffVisible ? "Add Staff" : "Edit Staff"} visible={visible} onCancel={handleCancel} footer={null}>
               <Form form={form} onFinish={onFinish}>

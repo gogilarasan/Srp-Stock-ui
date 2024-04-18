@@ -18,6 +18,7 @@ const Research = () => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [distdetails, setDistdetails] = useState(null);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     fetchResearchScholars();
@@ -137,10 +138,14 @@ const Research = () => {
     form.setFieldsValue({ distid: value });
   };
 
-  const handleStaffChange = (value) => {
-    console.log("Selected Staff ID:", value);
-    form.setFieldsValue({ staff_id: value });
+
+  const handleSearch = (value) => {
+    setSearchText(value);
   };
+
+  const filteredData = dataSource.filter((item) =>
+    item.rs_name.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   const columns = [
     {
@@ -185,11 +190,18 @@ const Research = () => {
     <Layout >
       <Navbar>
         <Content style={{ padding: "24px" }}>
-          <Button type="primary" icon={<PlusOutlined />} onClick={showModal} style={{ marginBottom: 16 }}>
-            Add Scholar
-          </Button>
+          <div style={{ marginBottom: 16 }}>
+            <Button type="primary" icon={<PlusOutlined />} onClick={showModal} style={{ marginBottom: 16 ,marginRight: 10}}>
+              Add Scholar
+            </Button>
+            <Input.Search
+              placeholder="Search Research"
+              onChange={(e) => handleSearch(e.target.value)}
+              style={{ width: 200 }}
+            />
+          </div>
           <Layout style={{ maxHeight: "70vh", overflowY: "auto" }} >
-            <Table dataSource={dataSource} columns={columns} pagination={20} />
+            <Table dataSource={filteredData} columns={columns} pagination={20} />
           </Layout>
           <Modal
             title={isUpdate ? "Edit Scholar" : "Add Scholar"}
@@ -233,7 +245,7 @@ const Research = () => {
                 name="staff_id"
                 rules={[{ required: true, message: "Please enter staff id" }]}
               >
-               <Select onChange={handleDistrictChange}>
+                <Select onChange={handleDistrictChange}>
                   {staffList && staffList.map(option => (
                     <Option key={option.staffid} value={option.staffid}>{option.staffname}</Option>
                   ))}

@@ -128,7 +128,7 @@ const Lab = () => {
     <Layout hasSider style={{ minHeight: "100vh" }}>
       <Navbar>
         <Layout style={{ padding: "24px" }}>
-          <Content>
+          <Content >
             <Button type="primary" icon={<PlusOutlined />} onClick={showModal} style={{ marginBottom: 24 }}>
               Add Lab
             </Button>

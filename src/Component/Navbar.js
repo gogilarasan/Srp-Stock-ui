@@ -63,7 +63,7 @@ const Navbar = ({ children }) => {
           selectedKeys={[location.pathname]}
         >
           <Menu.Item key="/Home" icon={<HomeOutlined />}>
-            <Link to="/Home">Home</Link>
+            <Link to="/Home">Dashboard</Link>
           </Menu.Item>
           <Menu.Item key="/Lab" icon={<ExperimentOutlined />}>
             <Link to="/Lab">Lab</Link>

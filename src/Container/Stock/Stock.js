@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Typography, Table, Button, Modal, Form, Input, Space, message, Select, FloatButton, Tooltip, Upload } from "antd";
+import { Layout, Typography, Table, Button, Modal, Form, Input, Space, message, Select, FloatButton, Upload } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined, DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 import Navbar from "../../Component/Navbar";
 import axios from "axios";
@@ -16,20 +16,19 @@ const Stock = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
     const [selectedItem, setSelectedItem] = useState(null);
-    const [fileFormat, setFileFormat] = useState("json");
     const [downloadModalVisible, setDownloadModalVisible] = useState(false);
     const [downloadFileName, setDownloadFileName] = useState("");
     const [downloadFileType, setDownloadFileType] = useState("json");
-    const [uploadModalVisible, setUploadModalVisible] = useState(false);
     const [uploadFile, setUploadFile] = useState(null)
 
     const columns = [
-        { title: "Stock Register Page No.", dataIndex: "stockRegisterPageNo", key: "stockRegisterPageNo" },
-        { title: "Stock Register Sl.No.", dataIndex: "stockRegisterSlNo", key: "stockRegisterSlNo" },
+        { title: "S.No", render: (text, record, index) => index + 1, key: "sno" },
+        { title: "Stock Page No.", dataIndex: "stockRegisterPageNo", key: "stockRegisterPageNo" },
+        { title: "Stock SI.No.", dataIndex: "stockRegisterSlNo", key: "stockRegisterSlNo" },
         { title: "Description", dataIndex: "description", key: "description" },
-        { title: "Book Figure Quantity", dataIndex: "bookFigureQuantity", key: "bookFigureQuantity" },
-        { title: "Book Stock Value Rs.", dataIndex: "bookStockValueRs", key: "bookStockValueRs" },
-        { title: "Issued to / Remarks", dataIndex: "issuedToRemarks", key: "issuedToRemarks" },
+        { title: "Quantity", dataIndex: "bookFigureQuantity", key: "bookFigureQuantity" },
+        { title: "Stock Value Rs.", dataIndex: "bookStockValueRs", key: "bookStockValueRs" },
+        { title: "Issued/Remarks", dataIndex: "issuedToRemarks", key: "issuedToRemarks" },
         { title: "Location", dataIndex: "location", key: "location" },
         {
             title: "Actions",
@@ -146,41 +145,23 @@ const Stock = () => {
         return `${header}\n${body}`;
     };
 
-    const handleUpload = async (file) => {
+    const handleUpload = (file) => {
         setUploadFile(file);
-        setUploadModalVisible(true);
-        handleUploadConfirm();
+        processAndStoreData(file);
     };
 
-    const handleUploadConfirm = async () => {
-        if (!uploadFile) {
-            message.error("Please select a file");
-            return;
-        }
-
+    const processAndStoreData = async (file) => {
         try {
-            const fileReader = new FileReader();
-            fileReader.onload = (e) => {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: "array" });
-                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                const records = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                records.shift();
-                processAndStoreData(records);
-            };
-            fileReader.readAsArrayBuffer(uploadFile.originFileObj);
-        } catch (error) {
-            console.error("Error processing file: ", error);
-            message.error("Failed to process file");
-        }
+            const formData = new FormData();
+            formData.append('file', file);
 
-        setUploadModalVisible(false);
-    };
-
-    const processAndStoreData = async (records) => {
-        try {
-            const response = await axios.post("http://localhost:3000/admin/bulk_create_stock_dept", {records});
-            if (response.data.message === "Bulk stock departments created successfully") {
+            const response = await axios.post("http://localhost:3000/admin/bulk-import", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log(response.data);
+            if (response.data.message === "Bulk import successful") {
                 fetchData();
                 message.success("Bulk data imported successfully");
             } else {
@@ -192,7 +173,6 @@ const Stock = () => {
         }
     };
 
-
     return (
         <Layout>
             <Navbar>
@@ -200,7 +180,7 @@ const Stock = () => {
                     <div style={{ marginBottom: 16 }}>
                         <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>Add Stock</Button>
                         <FloatButton icon={<DownloadOutlined />} onClick={handleDownload} tooltip={<div>Download</div>} />
-                        <Upload accept=".xlsx" beforeUpload={handleUpload}>
+                        <Upload accept=".xlsx,.csv,.json" beforeUpload={(file) => { handleUpload(file); return false; }}>
                             <Button icon={<UploadOutlined />} style={{ marginLeft: 8 }}>Bulk Import</Button>
                         </Upload>
                     </div>
