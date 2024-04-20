@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Typography, Card, Row, Col, Space } from "antd";
+import { Layout, Typography, Card, Row, Col, Space, message } from "antd";
 import { UserOutlined, TeamOutlined, BookOutlined, DesktopOutlined, DollarOutlined } from "@ant-design/icons";
-import Navbar from "../../Component/Navbar";
+import Navbar from "../../Component/Navbar/Navbar";
 import axios from "axios";
-import Graph from "../../Component/Chart";
-import SGraph from "../../Component/LChart";
+import Graph from "../../Component/Charts/Chart";
+import SGraph from "../../Component/Charts/LChart";
+import CustomCard from "../../Component/Cards/OverviewCard";
+import TodoList from "../../Component/ToDo/Tododash";
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -19,6 +21,7 @@ const Home = () => {
   const [chartData, setData] = useState([]);
   const [stockData, setStocksData] = useState([]);
   const [totalStockValue, setTotalStockValue] = useState(0);
+  const [todos, setTodos] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,12 +95,36 @@ const Home = () => {
       }
     };
 
+   
 
-
+    fetchTodo();
     fetchStocks();
     fetchLab();
     fetchData();
   }, []);
+
+  const fetchTodo = async () => {
+    try {
+      const todosResponse = await axios.get("http://localhost:3000/admin/get_all_todos");
+      setTodos(todosResponse.data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const toggleTodo = async (taskId, newStatus) => {
+    try {
+      // Update the todo status
+      await axios.put("http://localhost:3000/admin/update_todo_status", { taskId, status: newStatus });
+      message.success("Task status updated successfully");
+      fetchTodo();
+    } catch (error) {
+      console.error("Error updating task status:", error);
+      message.error("Failed to update task status");
+    }
+  };
+
+  
 
   return (
     <Layout hasSider style={{ minHeight: "100vh" }}>
@@ -105,81 +132,65 @@ const Home = () => {
         <Layout style={{ maxHeight: "100vh", overflowY: "auto" }}>
           <Content style={{ padding: '24px', minHeight: '280px', maxHeight: 'calc(100vh - 64px)' }}>
             <Row gutter={[16, 32]}>
-              <Col span={8}>
-                <Card title="Details" style={{ marginBottom: "16px", boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-                  <Row gutter={[16, 32]} justify="center">
-                    <Col span={24}>
-                      <Space direction="horizontal" align="center">
-                        <div style={{ background: '#1890ff', padding: '8px', borderRadius: '8px' }}>
-                          <UserOutlined style={{ fontSize: '24px', color: '#fff' }} />
-                        </div>
-                        <div style={{ flex: 1, paddingLeft: '16px' }}>
-                          <div>Total Staffs</div>
-                          <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{counts.total_staff}</div>
-                        </div>
-                      </Space>
-                    </Col>
-                  </Row>
-                  <Row gutter={[16, 32]} justify="center">
-                    <Col span={24}>
-                      <Space direction="horizontal" align="center">
-                        <div style={{ background: '#52c41a', padding: '8px', borderRadius: '8px' }}>
-                          <TeamOutlined style={{ fontSize: '24px', color: '#fff' }} />
-                        </div>
-                        <div style={{ flex: 1, paddingLeft: '16px' }}>
-                          <div>Total Research Scholars</div>
-                          <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{counts.total_rs}</div>
-                        </div>
-                      </Space>
-                    </Col>
-                  </Row>
-                  <Row gutter={[16, 32]} justify="center">
-                    <Col span={24}>
-                      <Space direction="horizontal" align="center">
-                        <div style={{ background: '#fa8c16', padding: '8px', borderRadius: '8px' }}>
-                          <BookOutlined style={{ fontSize: '24px', color: '#fff' }} />
-                        </div>
-                        <div style={{ flex: 1, paddingLeft: '16px' }}>
-                          <div>Total Stocks</div>
-                          <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{counts.total_stocks}</div>
-                        </div>
-                      </Space>
-                    </Col>
-                  </Row>
-                  <Row gutter={[16, 32]} justify="center">
-                    <Col span={24}>
-                      <Space direction="horizontal" align="center">
-                        <div style={{ background: '#f5222d', padding: '8px', borderRadius: '8px' }}>
-                          <DesktopOutlined style={{ fontSize: '24px', color: '#fff' }} />
-                        </div>
-                        <div style={{ flex: 1, paddingLeft: '16px' }}>
-                          <div>Total Stocks</div>
-                          <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{counts.system}</div>
-                        </div>
-                      </Space>
-                    </Col>
-                  </Row>
-                </Card>
-                <Card
-                  title="Total Stock Value"
-                  style={{ marginBottom: "16px", boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <DollarOutlined style={{ fontSize: '24px', color: '#52c41a', marginRight: '8px' }} />
-                    <div>
-                      <p style={{ fontSize: '18px', color: '#52c41a', margin: 0 }}>
-                        {totalStockValue.toFixed(2)}
-                      </p>
-                    </div>
-                  </div>
-                </Card>
+              <Col xs={24} sm={12}>
+                <CustomCard
+                  backgroundColor="#f0f2f5"
+                  title="Staffs"
+                  count={counts.total_staff}
+                  icon={<UserOutlined style={{ fontSize: '24px', color: '#fff' }} />}
+                  iconColor="#1890ff"
+                  iconBackground="#1890ff"
+                  circleColor=""
+                />
               </Col>
-              <Col span={16}>
-                <Card title="System Stocks" style={{
-                  height: "470px", boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                  backgroundColor: '#ffffff',
-                }} headStyle={{ backgroundColor: '#2196F3', color: 'white' }}>
-                  <Graph data={chartData} graphType="bar" />
+              <Col xs={24} sm={12}>
+                <CustomCard
+                  backgroundColor="#f0f2f5"
+                  title="Research Scholars"
+                  count={counts.total_rs}
+                  icon={<TeamOutlined style={{ fontSize: '24px', color: '#fff' }} />}
+                  iconColor="#52c41a"
+                  iconBackground="#52c41a"
+                  circleColor=""
+                />
+              </Col>
+            </Row>
+            <Row gutter={[16, 32]}>
+              <Col xs={24} sm={12}>
+                <CustomCard
+                  backgroundColor="#f0f2f5"
+                  title="Stocks"
+                  count={counts.total_stocks}
+                  icon={<BookOutlined style={{ fontSize: '24px', color: '#fff' }} />}
+                  iconColor="#f5222d"
+                  iconBackground="#f5222d"
+                  circleColor=""
+                />
+              </Col>
+              <Col xs={24} sm={12}>
+                <CustomCard
+                  backgroundColor="#f0f2f5"
+                  title="Systems"
+                  count={counts.system}
+                  icon={<DesktopOutlined style={{ fontSize: '24px', color: '#fff' }} />}
+                  iconColor="#fa8c16"
+                  iconBackground="#fa8c16"
+                />
+              </Col>
+            </Row>
+            <Row gutter={[16, 32]}>
+              <Col xs={24} sm={12}>
+                    <div style={{ flex: 1 }}>
+                      <TodoList todos={todos} toggleTodo={toggleTodo} />
+                    </div>
+              </Col>
+              <Col xs={24} sm={12}>
+                <Card>
+                  <Space direction="horizontal" align="center">
+                    <div style={{ flex: 1, paddingLeft: '16px' }}>
+                      <div>graph</div>
+                    </div>
+                  </Space>
                 </Card>
               </Col>
             </Row>

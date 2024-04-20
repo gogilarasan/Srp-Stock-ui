@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Typography, Table, Button, Modal, Form, Input, message, Select } from "antd";
-import Navbar from "../../Component/Navbar";
+import Navbar from "../../Component/Navbar/Navbar";
 import { EditOutlined, ExclamationCircleOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 

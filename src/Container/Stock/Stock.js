@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Typography, Table, Button, Modal, Form, Input, Space, message, Select, FloatButton, Upload } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined, DownloadOutlined, UploadOutlined } from "@ant-design/icons";
-import Navbar from "../../Component/Navbar";
+import Navbar from "../../Component/Navbar/Navbar";
 import axios from "axios";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';

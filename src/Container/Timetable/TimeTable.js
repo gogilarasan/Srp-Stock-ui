@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Typography, Tabs, Card, Modal, Form, Input, Button, Select, TimePicker, Table, Tag, Space, message } from "antd";
 import { ScheduleOutlined } from "@ant-design/icons";
-import Navbar from "../../Component/Navbar";
+import Navbar from "../../Component/Navbar/Navbar";
 import axios from "axios";
 
 const { Content } = Layout;

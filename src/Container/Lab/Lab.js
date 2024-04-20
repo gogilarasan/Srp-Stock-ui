@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Typography, Card, Modal, Button, Form, Input, message, Menu, Dropdown, Popconfirm, Tooltip } from "antd";
 import { PlusOutlined, UserOutlined, EllipsisOutlined, SearchOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import Navbar from "../../Component/Navbar";
+import Navbar from "../../Component/Navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import './Lab.css';

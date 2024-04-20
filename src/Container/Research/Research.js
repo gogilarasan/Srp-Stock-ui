@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Typography, Table, Button, Modal, Form, Input, message, Select } from "antd";
-import Navbar from "../../Component/Navbar";
+import Navbar from "../../Component/Navbar/Navbar";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { DatePicker } from "antd";

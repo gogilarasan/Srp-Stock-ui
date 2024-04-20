@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Layout, Typography, Form, Input, Button, message, Modal, Card, Col, Row, Popconfirm, Upload } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import Navbar from "../../Component/Navbar";
+import Navbar from "../../Component/Navbar/Navbar";
 import axios from "axios";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';

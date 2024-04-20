@@ -1,0 +1,52 @@
+.todo-list-card {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.todo-item {
+    margin-bottom: 16px;
+    padding: 12px;
+}
+
+.task-checkbox {
+    margin-right: 20px;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+}
+
+.priority-tag {
+    margin-right: 8px;
+    flex-shrink: 0; /* Ensures the priority tag doesn't grow */
+}
+
+.view-button,
+.delete-button {
+    margin-left: 8px;
+}
+
+/* Limit title and description width */
+.list-item-content {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Media query for responsiveness */
+@media screen and (max-width: 768px) {
+    .todo-item {
+        font-size: 14px;
+    }
+
+    .priority-tag {
+        margin-right: 4px; /* Reduce margin to make room for smaller screens */
+    }
+
+    .view-button,
+    .delete-button {
+        margin-left: 4px;
+    }
+}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Card, Button } from "antd";
-import Navbar from "../../Component/Navbar";
+import Navbar from "../../Component/Navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import './System.css';
