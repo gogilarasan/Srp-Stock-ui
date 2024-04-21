@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Typography, Card, Modal, Button, Form, Input, message, Menu, Dropdown, Popconfirm, Tooltip } from "antd";
-import { PlusOutlined, UserOutlined, EllipsisOutlined, SearchOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { PlusOutlined, UserOutlined, EllipsisOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import Navbar from "../../Component/Navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -127,33 +127,35 @@ const Lab = () => {
   return (
     <Layout hasSider style={{ minHeight: "100vh" }}>
       <Navbar>
-        <Layout style={{ padding: "24px" }}>
-          <Content >
+      <Layout style={{ maxHeight: "100vh", overflowY: "auto" }}>
+          <Content style={{ overflowY: 'auto',padding: '24px',minHeight: '280px', backgroundColor: '#f0f2f5' }}>
             <Button type="primary" icon={<PlusOutlined />} onClick={showModal} style={{ marginBottom: 24 }}>
               Add Lab
             </Button>
             <div className="labs-container">
               {labs.map((lab) => (
                 <Card
-                  style={{ width: 270, borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
-                  /*cover={
-                    <img
-                      alt="Lab"
-                      src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                      style={{ borderRadius: '8px 8px 0 0' }}
-                    />
-                  }*/
+                  key={lab.lab_id}
+                  style={{
+                    width: 350,
+                    borderRadius: '16px',
+                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+                    padding: '24px',
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e8e8e8',
+                    marginBottom: '24px', // Added margin bottom
+                  }}
                   actions={[
-                    <Tooltip title={lab.lab_incharge}> <UserOutlined key="staff" /></Tooltip>,
-                    <SearchOutlined key="view" onClick={() => redirectToDetails(lab)} />,
+                    <Tooltip title={lab.lab_incharge}><UserOutlined key="staff" /></Tooltip>,
+                    <Button key="view" onClick={() => redirectToDetails(lab)}>View</Button>,
                     <Dropdown overlay={menu(lab)} trigger={['click']} placement="bottomRight">
                       <EllipsisOutlined />
                     </Dropdown>,
                   ]}
                 >
                   <Meta
-                    title={<span style={{ fontSize: '20px', fontWeight: 'bold' }}>{lab.lab_name.toUpperCase()}</span>}
-                    description={lab.lab_description}
+                    title={<span style={{ fontSize: '24px', fontWeight: 'bold' }}>{lab.lab_name.toUpperCase()}</span>}
+                    description={<span style={{ fontSize: '16px' }}>{lab.lab_description}</span>}
                   />
                 </Card>
               ))}

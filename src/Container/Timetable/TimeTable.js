@@ -85,7 +85,7 @@ const TimeTable = () => {
     setModalVisible(false);
     form.resetFields();
     form.setFieldsValue({
-      timings: [null, null], 
+      timings: [null, null],
     });
   };
 
@@ -112,6 +112,7 @@ const TimeTable = () => {
       if (response.ok) {
         console.log("Timetable entry created successfully!");
         setModalVisible(false);
+        fetchTimeTable();
         form.resetFields();
       } else {
         console.error("Failed to create timetable entry:", response.statusText);
@@ -143,6 +144,7 @@ const TimeTable = () => {
   };
 
   const handleOpenUpdateModal = (entry) => {
+    console.log(entry);
     setSelectedEntry(entry);
     setUpdateModalVisible(true);
     form.setFieldsValue({
@@ -152,7 +154,9 @@ const TimeTable = () => {
       day: entry.day,
       session_type: entry.session_type,
       //timings: [moment(entry.timings.split('-')[0], 'HH:mm'), moment(entry.timings.split('-')[1], 'HH:mm')],
-      subject_teacher: entry.subject_teacher
+      subject_teacher: entry.subject_teacher,
+      sem: entry.sem,
+      batch: entry.batch
     });
   };
 
@@ -168,7 +172,9 @@ const TimeTable = () => {
 
   const handleUpdate = async (values) => {
     try {
+      console.log("Selected entry", selectedEntry);
       const updatedEntry = { ...selectedEntry, ...values };
+      console.log("Update entry : ", updatedEntry);
       const response = await axios.post('http://localhost:3000/admin/update_timetable', updatedEntry);
       if (response.status === 200) {
         message.success('Timetable updated successfully');
@@ -298,8 +304,8 @@ const TimeTable = () => {
   return (
     <Layout hasSider>
       <Navbar>
-        <Layout>
-          <Content style={{ padding: "24px", background: "#fff" }}>
+        <Layout style={{ maxHeight: "100vh", overflowY: "auto" }}>
+          <Content style={{ padding: '24px', minHeight: '280px', maxHeight: 'calc(100vh - 64px)' ,background:'#ffff'}}>
             <Tabs defaultActiveKey="1" tabPosition="top">
               <TabPane tab="Time Table Creation" key="1">
                 <div style={{ display: "flex", flexWrap: "wrap" }}>
@@ -361,6 +367,12 @@ const TimeTable = () => {
                         ))}
                       </Select>
                     </Form.Item>
+                    <Form.Item name="sem" label="Semester" rules={[{ required: true, message: 'Please enter semester!' }]}>
+                      <Input />
+                    </Form.Item>
+                    <Form.Item name="batch" label="Batch" rules={[{ required: true, message: 'Please enter batch!' }]}>
+                      <Input />
+                    </Form.Item>
                     <Form.Item wrapperCol={{ offset: 6 }}>
                       <Button type="primary" htmlType="submit">Create Timetable Entry</Button>
                     </Form.Item>
@@ -378,14 +390,14 @@ const TimeTable = () => {
                   ))}
                 </Select>
                 <div style={{ height: '450px', overflow: 'auto' }}>
-                <Table
-                  columns={columns}
-                  dataSource={data}
-                  bordered
-                  size="small"
-                  pagination={false}
-                  scroll={{ x: true }}
-                />
+                  <Table
+                    columns={columns}
+                    dataSource={data}
+                    bordered
+                    size="small"
+                    pagination={false}
+                    scroll={{ x: true }}
+                  />
                 </div>
               </TabPane>
             </Tabs>
@@ -437,6 +449,12 @@ const TimeTable = () => {
                       <Option key={staff.staffid} value={staff.staffid}>{staff.staffname}</Option>
                     ))}
                   </Select>
+                </Form.Item>
+                <Form.Item name="sem" label="Semester" rules={[{ required: true, message: 'Please enter semester!' }]}>
+                  <Input />
+                </Form.Item>
+                <Form.Item name="batch" label="Batch" rules={[{ required: true, message: 'Please enter batch!' }]}>
+                  <Input />
                 </Form.Item>
               </Form>
             </Modal>

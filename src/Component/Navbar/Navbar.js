@@ -84,7 +84,7 @@ const Navbar = ({ children }) => {
             <Link to="/TimeTable">TimeTable</Link>
           </Menu.Item>
           <Menu.Item key="/Report" icon={<FileTextOutlined />}>
-            <Link to="/Report">Report</Link>
+            <Link to="/Report">Remarks</Link>
           </Menu.Item>
         </Menu>
       </Sider>

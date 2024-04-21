@@ -29,23 +29,23 @@ const System = () => {
     navigate(`/System/SysStocks?lab=${lab.lab_id}`);
   };
 
-
   return (
     <Layout hasSider style={{ minHeight: "100vh" }}>
       <Navbar>
-        <Layout style={{ padding: "24px" }}>
-          <Content>
+        <Layout style={{ padding: "24px", overflow: "hidden" }}>
+          <Content style={{ overflowY: 'auto', height: "calc(100vh - 48px)" }}>
             <div className="labs-container">
               {labs.map((lab) => (
                 <Card
-                  style={{ width: 270, borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
-                  /*cover={
-                    <img
-                      alt="Lab"
-                      src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                      style={{ borderRadius: '8px 8px 0 0' }}
-                    />
-                  }*/
+                  key={lab.lab_id}
+                  style={{
+                    width: 350, // Increased width
+                    borderRadius: '16px', // Increased border radius
+                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)', // Increased box shadow
+                    marginBottom: '24px', // Added margin bottom
+                    backgroundColor: '#ff521', // Random background color
+                    color: '#ffffff', // Text color
+                  }}
                   actions={[
                     <Button type="text" onClick={() => redirectToDetails(lab)}>
                       View
@@ -53,8 +53,8 @@ const System = () => {
                   ]}
                 >
                   <Meta
-                    title={<span style={{ fontSize: '20px', fontWeight: 'bold' }}>{lab.lab_name.toUpperCase()}</span>}
-                    description={lab.lab_description}
+                    title={<span style={{ fontSize: '24px', fontWeight: 'bold' }}>{lab.lab_name.toUpperCase()}</span>} // Increased font size
+                    description={<span style={{ fontSize: '16px' }}>{lab.lab_description}</span>} // Adjusted font size
                   />
                 </Card>
               ))}
@@ -66,5 +66,13 @@ const System = () => {
   );
 };
 
+// const getRandomColor = () => {
+//   const letters = "0123456789ABCDEF";
+//   let color = "#";
+//   for (let i = 0; i < 6; i++) {
+//     color += letters[Math.floor(Math.random() * 16)];
+//   }
+//   return color;
+// };
 
 export default System;

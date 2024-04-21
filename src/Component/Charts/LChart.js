@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush } from 'recharts';
+import {
+    LineChart, Line, AreaChart, Area, BarChart, Bar,
+    XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+    ResponsiveContainer, Brush, ScatterChart, Scatter,
+    PieChart, Pie, RadarChart, Radar, PolarAngleAxis,
+    RadialBarChart, RadialBar, Treemap, ComposedChart,
+    PolarGrid, PolarRadiusAxis,
+} from 'recharts';
 import { Button } from 'antd';
 import 'antd/dist/antd';
 
@@ -11,7 +18,6 @@ const LargeDataChart = ({ data: initialData }) => {
         setData(formatData(initialData || []));
     }, [initialData]);
 
-    // Function to format data for different chart types
     const formatData = (data) => {
         return data.map((item, index) => ({
             index,
@@ -21,7 +27,6 @@ const LargeDataChart = ({ data: initialData }) => {
         }));
     };
 
-    // Custom tooltip content
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload) {
             return (
@@ -36,18 +41,15 @@ const LargeDataChart = ({ data: initialData }) => {
         return null;
     };
 
-    // Function to handle graph type change
     const handleGraphTypeChange = (type) => {
         setGraphType(type);
     };
 
-    // Render different chart based on graphType
     const renderChart = () => {
         switch (graphType) {
             case 'line':
                 return (
                     <LineChart data={data}>
-                        {/* Line chart components */}
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="index" />
                         <YAxis />
@@ -64,7 +66,6 @@ const LargeDataChart = ({ data: initialData }) => {
             case 'area':
                 return (
                     <AreaChart data={data}>
-                        {/* Area chart components */}
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="index" />
                         <YAxis />
@@ -81,7 +82,6 @@ const LargeDataChart = ({ data: initialData }) => {
             case 'bar':
                 return (
                     <BarChart data={data}>
-                        {/* Bar chart components */}
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="index" />
                         <YAxis />
@@ -95,6 +95,86 @@ const LargeDataChart = ({ data: initialData }) => {
                         <Bar dataKey="Value" fill="#0000ff" />
                     </BarChart>
                 );
+            case 'scatter':
+                return (
+                    <ScatterChart data={data}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="index" />
+                        <YAxis />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Legend />
+                        <Brush
+                            startIndex={0}
+                            endIndex={50}
+                        />
+                        <Scatter name="Quantity" dataKey="Quantity" fill="#ff0000" />
+                        <Scatter name="Value" dataKey="Value" fill="#0000ff" />
+                    </ScatterChart>
+                );
+            case 'pie':
+                return (
+                    <PieChart>
+                        <Pie data={data} dataKey="Quantity" fill="#ff0000" label />
+                        <Pie data={data} dataKey="Value" fill="#0000ff" label />
+                        <Tooltip />
+                    </PieChart>
+                );
+            case 'radar':
+                return (
+                    <RadarChart cx={300} cy={250} outerRadius={150} width={600} height={500} data={data}>
+                        <PolarGrid />
+                        <PolarAngleAxis dataKey="index" />
+                        <PolarRadiusAxis />
+                        <Tooltip />
+                        <Radar name="Quantity" dataKey="Quantity" stroke="#ff0000" fill="#ff0000" fillOpacity={0.6} />
+                        <Radar name="Value" dataKey="Value" stroke="#0000ff" fill="#0000ff" fillOpacity={0.6} />
+                    </RadarChart>
+                );
+            case 'radialBar':
+                return (
+                    <RadialBarChart cx={300} cy={250} innerRadius={20} outerRadius={200} barSize={10} data={data}>
+                        <RadialBar dataKey="Quantity" fill="#ff0000" />
+                        <RadialBar dataKey="Value" fill="#0000ff" />
+                        <Tooltip />
+                    </RadialBarChart>
+                );
+            case 'treemap':
+                return (
+                    <Treemap width={400} height={200} data={data} dataKey="Quantity" ratio={4 / 3} />
+                );
+            case 'composed':
+                return (
+                    <ComposedChart data={data}>
+                        <CartesianGrid stroke="#f5f5f5" />
+                        <XAxis dataKey="index" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Brush
+                            startIndex={0}
+                            endIndex={50}
+                        />
+                        <Area type="monotone" dataKey="Quantity" fill="#ff0000" />
+                        <Bar dataKey="Value" barSize={20} fill="#0000ff" />
+                        <Line type="monotone" dataKey="Value" stroke="#00ff00" />
+                    </ComposedChart>
+                );
+            case 'heatmap':
+                return (
+                    <ScatterChart data={data}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="index" />
+                        <YAxis dataKey="Description" type="category" />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Legend />
+                        <Brush
+                            startIndex={0}
+                            endIndex={50}
+                        />
+                        <Scatter name="Quantity" data={data} fill="#ff0000" />
+                        <Scatter name="Value" data={data} fill="#0000ff" />
+                    </ScatterChart>
+                );
             default:
                 return null;
         }
@@ -105,7 +185,14 @@ const LargeDataChart = ({ data: initialData }) => {
             <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
                 <Button type={graphType === 'line' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('line')} style={{ marginRight: '10px' }}>Line Chart</Button>
                 <Button type={graphType === 'area' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('area')} style={{ marginRight: '10px' }}>Area Chart</Button>
-                <Button type={graphType === 'bar' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('bar')}>Bar Chart</Button>
+                <Button type={graphType === 'bar' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('bar')} style={{ marginRight: '10px' }}>Bar Chart</Button>
+                <Button type={graphType === 'scatter' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('scatter')} style={{ marginRight: '10px' }}>Scatter Chart</Button>
+                <Button type={graphType === 'pie' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('pie')} style={{ marginRight: '10px' }}>Pie Chart</Button>
+                <Button type={graphType === 'heatmap' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('heatmap')} style={{ marginRight: '10px' }}>Heatmap</Button>
+                <Button type={graphType === 'radar' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('radar')} style={{ marginRight: '10px' }}>Radar Chart</Button>
+                <Button type={graphType === 'radialBar' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('radialBar')} style={{ marginRight: '10px' }}>Radial Bar Chart</Button>
+                <Button type={graphType === 'treemap' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('treemap')} style={{ marginRight: '10px' }}>Treemap Chart</Button>
+                <Button type={graphType === 'composed' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('composed')}>Composed Chart</Button>
             </div>
             <ResponsiveContainer>
                 {renderChart()}

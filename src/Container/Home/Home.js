@@ -4,6 +4,8 @@ import { UserOutlined, TeamOutlined, BookOutlined, DesktopOutlined, DollarOutlin
 import Navbar from "../../Component/Navbar/Navbar";
 import axios from "axios";
 import Graph from "../../Component/Charts/Chart";
+import HGraph from "../../Component/Charts/HeatMap";
+import VGraph from "../../Component/Charts/VCharts";
 import SGraph from "../../Component/Charts/LChart";
 import CustomCard from "../../Component/Cards/OverviewCard";
 import TodoList from "../../Component/ToDo/Tododash";
@@ -19,6 +21,7 @@ const Home = () => {
     total_system: 0,
   });
   const [chartData, setData] = useState([]);
+  const [timeData, setTimeData] = useState([]);
   const [stockData, setStocksData] = useState([]);
   const [totalStockValue, setTotalStockValue] = useState(0);
   const [todos, setTodos] = useState([]);
@@ -67,6 +70,29 @@ const Home = () => {
       }
     };
 
+    const fetchLabTimeTable = async () => {
+      try {
+        const response = await axios.post("http://localhost:3000/admin/get_all_labs");
+        const labs = response.data;
+
+        const timData = [];
+
+        for (const lab of labs) {
+          const labId = lab.lab_id;
+          const labName = lab.lab_name;
+
+          const TimeResponse = await axios.post("http://localhost:3000/admin/get_timetable_by_Lab_id", { lab_id: labId });
+          const data = TimeResponse.data;
+
+          timData.push({ LabId: labId, Lab: labName, Timetable: data });
+        }
+        setTimeData(timData);
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
     const fetchStocks = async () => {
       try {
         const response = await axios.post("http://localhost:3000/admin/get_all_stock_depts");
@@ -95,8 +121,8 @@ const Home = () => {
       }
     };
 
-   
 
+    fetchLabTimeTable();
     fetchTodo();
     fetchStocks();
     fetchLab();
@@ -124,7 +150,7 @@ const Home = () => {
     }
   };
 
-  
+  console.log("Time Table Data :", timeData);
 
   return (
     <Layout hasSider style={{ minHeight: "100vh" }}>
@@ -180,18 +206,14 @@ const Home = () => {
             </Row>
             <Row gutter={[16, 32]}>
               <Col xs={24} sm={12}>
-                    <div style={{ flex: 1 }}>
-                      <TodoList todos={todos} toggleTodo={toggleTodo} />
-                    </div>
+                <div style={{ flex: 1 }}>
+                  <TodoList todos={todos} toggleTodo={toggleTodo} />
+                </div>
               </Col>
               <Col xs={24} sm={12}>
-                <Card>
-                  <Space direction="horizontal" align="center">
-                    <div style={{ flex: 1, paddingLeft: '16px' }}>
-                      <div>graph</div>
-                    </div>
-                  </Space>
-                </Card>
+                <div style={{ flex: 1 }}>
+                  <HGraph data={timeData} />
+                </div>
               </Col>
             </Row>
             <div style={{ marginTop: '32px' }}></div>
