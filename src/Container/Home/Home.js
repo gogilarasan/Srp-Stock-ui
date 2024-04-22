@@ -6,6 +6,7 @@ import axios from "axios";
 import Graph from "../../Component/Charts/Chart";
 import HGraph from "../../Component/Charts/HeatMap";
 import VGraph from "../../Component/Charts/VCharts";
+// import AGraph from "../../Component/Charts/AntChart";
 import SGraph from "../../Component/Charts/LChart";
 import CustomCard from "../../Component/Cards/OverviewCard";
 import TodoList from "../../Component/ToDo/Tododash";
@@ -229,9 +230,24 @@ const Home = () => {
                   headStyle={{ backgroundColor: '#ffffff', color: 'black' }}
                 >
                   <div style={{ height: '100%' }}>
-                    <SGraph data={stockData} graphType="sinusoidal-section" />
+                    <SGraph data={stockData} graphType="line" />
                   </div>
                 </Card>
+              </Col>
+            </Row>
+            <div style={{ marginTop: '32px' }}></div>
+            <Row gutter={[16, 32]}>
+              <Col xs={24} sm={12}>
+                <div>
+                  <Card></Card>
+                </div>
+              </Col>
+              <Col xs={24} sm={12}>
+                <div>
+                  <Card>
+
+                  </Card>
+                </div>
               </Col>
             </Row>
           </Content>

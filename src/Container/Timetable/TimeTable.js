@@ -312,7 +312,7 @@ const TimeTable = () => {
                   {labs.map(lab => (
                     <Card
                       key={lab.lab_id}
-                      style={{ width: 300, margin: 16 }}
+                      style={{ width: 350, margin: 16 }}
                       actions={[<Button
                         type="primary"
                         icon={<ScheduleOutlined />}

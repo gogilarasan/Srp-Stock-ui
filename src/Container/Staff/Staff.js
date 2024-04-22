@@ -174,7 +174,7 @@ const Staff = () => {
     <Layout>
       <Navbar>
         <Layout>
-          <Content style={{ padding: "24px", background: "#fff" }}>
+          <Content style={{ padding: "24px" }}>
             <div style={{ marginBottom: 16 }}>
               <Button type="primary" icon={<PlusOutlined />} onClick={showCreateModal} style={{ marginRight: 16 }}>
                 Add Staff

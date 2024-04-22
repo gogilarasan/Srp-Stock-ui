@@ -146,7 +146,7 @@ const Lab = () => {
                     marginBottom: '24px', // Added margin bottom
                   }}
                   actions={[
-                    <Tooltip title={lab.lab_incharge}><UserOutlined key="staff" /></Tooltip>,
+                    <Button><UserOutlined key="staff" />{lab.lab_incharge}</Button>,
                     <Button key="view" onClick={() => redirectToDetails(lab)}>View</Button>,
                     <Dropdown overlay={menu(lab)} trigger={['click']} placement="bottomRight">
                       <EllipsisOutlined />

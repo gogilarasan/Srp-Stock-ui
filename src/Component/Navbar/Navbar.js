@@ -15,7 +15,7 @@ import {
   LogoutOutlined
 } from "@ant-design/icons";
 
-const { Header, Sider } = Layout;
+const { Header, Sider, Content } = Layout;
 
 const Navbar = ({ children }) => {
   const location = useLocation();
@@ -44,22 +44,29 @@ const Navbar = ({ children }) => {
   };
 
   return (
-    <Layout>
+    <Layout style={{ minHeight: "100vh" }}>
       <Sider
         collapsed={collapsed}
         width={270}
         style={{
           overflow: "auto",
-          height: "100vh",
-          background: "#fff"
+          background: "#f5f5f5",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)"
         }}
         breakpoint="md"
         collapsedWidth={60}
         onBreakpoint={onBreakpoint}
       >
+        <div style={{ height: "64px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Button
+            className="trigger"
+            onClick={toggleCollapsed}
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          />
+        </div>
         <Menu
           mode="inline"
-          style={{ flexGrow: 1 }}
+          style={{ flexGrow: 1, background: "#f5f5f5", borderRight: "none" }}
           selectedKeys={[location.pathname]}
         >
           <Menu.Item key="/Home" icon={<HomeOutlined />}>
@@ -89,37 +96,32 @@ const Navbar = ({ children }) => {
         </Menu>
       </Sider>
       <Layout>
-        <Header style={{ background: "#fff", padding: 0, height: "64px", lineHeight: "64px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 24px", color: "#000", height: "100%" }}>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <Button
-                className="trigger"
-                style={{ marginRight: "20px" }}
-                onClick={toggleCollapsed}
-                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        <Header
+          style={{
+            background: "#f5f5f5",
+            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)"
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: "24px" }}>
+            <Tooltip title="Logout">
+              <LogoutOutlined
+                style={{
+                  fontSize: "18px",
+                  color: "#000",
+                  padding: "8px",
+                  borderRadius: "50%",
+                  background: "#fff",
+                  cursor: "pointer",
+                  marginTop: "10px"
+                }}
+                onClick={handleLogout}
               />
-            </div>
-            <div
-              onClick={handleLogout}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                cursor: "pointer",
-                marginRight: "10px",
-                flexShrink: 0
-              }}
-            >
-              <Tooltip title="Logout">
-                <LogoutOutlined style={{ fontSize: "18px", marginRight: "5px", color: "#000", padding: "4px", borderRadius: "50%" }} />
-              </Tooltip>
-            </div>
+            </Tooltip>
           </div>
         </Header>
-        <Layout.Content>
-          <div style={{ background: "#fff" }}>
-            {children}
-          </div>
-        </Layout.Content>
+        <Content style={{ padding: "24px", minHeight: 280 }}>
+          {children}
+        </Content>
       </Layout>
     </Layout>
   );

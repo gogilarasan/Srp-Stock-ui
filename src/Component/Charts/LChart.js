@@ -56,11 +56,14 @@ const LargeDataChart = ({ data: initialData }) => {
                         <Tooltip content={<CustomTooltip />} />
                         <Legend />
                         <Brush
+                            dataKey="index"
                             startIndex={0}
                             endIndex={50}
+                            height={30}
+                            stroke="#8884d8"
                         />
-                        <Line type="monotone" dataKey="Quantity" stroke="#ff0000" strokeWidth={2} dot={{ r: 5 }} />
-                        <Line type="monotone" dataKey="Value" stroke="#0000ff" strokeWidth={2} dot={{ r: 5 }} />
+                        <Line type="monotone" dataKey="Quantity" stroke="#ff0000" strokeWidth={2} dot={false} />
+                        <Line type="monotone" dataKey="Value" stroke="#0000ff" strokeWidth={2} dot={false} />
                     </LineChart>
                 );
             case 'area':
@@ -116,6 +119,10 @@ const LargeDataChart = ({ data: initialData }) => {
                     <PieChart>
                         <Pie data={data} dataKey="Quantity" fill="#ff0000" label />
                         <Pie data={data} dataKey="Value" fill="#0000ff" label />
+                        <Brush
+                            startIndex={0}
+                            endIndex={50}
+                        />
                         <Tooltip />
                     </PieChart>
                 );
@@ -183,8 +190,8 @@ const LargeDataChart = ({ data: initialData }) => {
     return (
         <div style={{ width: '100%', height: '600px', padding: '20px' }}>
             <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
-                <Button type={graphType === 'line' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('line')} style={{ marginRight: '10px' }}>Line Chart</Button>
-                <Button type={graphType === 'area' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('area')} style={{ marginRight: '10px' }}>Area Chart</Button>
+                {/* <Button type={graphType === 'line' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('line')} style={{ marginRight: '10px' }}>Line Chart</Button> */}
+                {/* <Button type={graphType === 'area' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('area')} style={{ marginRight: '10px' }}>Area Chart</Button>
                 <Button type={graphType === 'bar' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('bar')} style={{ marginRight: '10px' }}>Bar Chart</Button>
                 <Button type={graphType === 'scatter' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('scatter')} style={{ marginRight: '10px' }}>Scatter Chart</Button>
                 <Button type={graphType === 'pie' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('pie')} style={{ marginRight: '10px' }}>Pie Chart</Button>
@@ -192,7 +199,7 @@ const LargeDataChart = ({ data: initialData }) => {
                 <Button type={graphType === 'radar' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('radar')} style={{ marginRight: '10px' }}>Radar Chart</Button>
                 <Button type={graphType === 'radialBar' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('radialBar')} style={{ marginRight: '10px' }}>Radial Bar Chart</Button>
                 <Button type={graphType === 'treemap' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('treemap')} style={{ marginRight: '10px' }}>Treemap Chart</Button>
-                <Button type={graphType === 'composed' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('composed')}>Composed Chart</Button>
+                <Button type={graphType === 'composed' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('composed')}>Composed Chart</Button> */}
             </div>
             <ResponsiveContainer>
                 {renderChart()}

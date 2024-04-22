@@ -176,7 +176,7 @@ const Stock = () => {
     return (
         <Layout>
             <Navbar>
-                <Content style={{ padding: "24px" }}>
+                <Content style={{ padding: "12px"}}>
                     <div style={{ marginBottom: 16 }}>
                         <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>Add Stock</Button>
                         <FloatButton icon={<DownloadOutlined />} onClick={handleDownload} tooltip={<div>Download</div>} />
