@@ -8,7 +8,7 @@ import * as XLSX from 'xlsx';
 import "./Stocks.css"
 
 const { Content } = Layout;
-const { Title } = Typography;
+// const { Title } = Typography;
 const { Option } = Select;
 
 const Stock = () => {
@@ -16,10 +16,12 @@ const Stock = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
     const [selectedItem, setSelectedItem] = useState(null);
+    const [staffList, setStaffList] = useState([]);
     const [downloadModalVisible, setDownloadModalVisible] = useState(false);
     const [downloadFileName, setDownloadFileName] = useState("");
     const [downloadFileType, setDownloadFileType] = useState("json");
-    const [uploadFile, setUploadFile] = useState(null)
+    const [uploadFile, setUploadFile] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const columns = [
         { title: "S.No", render: (text, record, index) => index + 1, key: "sno" },
@@ -28,7 +30,8 @@ const Stock = () => {
         { title: "Description", dataIndex: "description", key: "description" },
         { title: "Quantity", dataIndex: "bookFigureQuantity", key: "bookFigureQuantity" },
         { title: "Stock Value Rs.", dataIndex: "bookStockValueRs", key: "bookStockValueRs" },
-        { title: "Issued/Remarks", dataIndex: "issuedToRemarks", key: "issuedToRemarks" },
+        { title: "Remarks", dataIndex: "issuedToRemarks", key: "issuedToRemarks" },
+        { title: "Issued", dataIndex: "issued", key: "issued" },
         { title: "Location", dataIndex: "location", key: "location" },
         {
             title: "Actions",
@@ -56,8 +59,18 @@ const Stock = () => {
         }
     };
 
+    const fetchStaffList = async () => {
+        try {
+            const response = await axios.post("http://localhost:3000/admin/get_all_staffs");
+            setStaffList(response.data);
+        } catch (error) {
+            console.error("Error fetching staff list:", error);
+        }
+    };
+
     useEffect(() => {
         fetchData();
+        fetchStaffList();
     }, []);
 
     const showModal = () => {
@@ -98,6 +111,11 @@ const Stock = () => {
         form.setFieldsValue(record);
         setIsModalVisible(true);
     };
+
+    const handleStaffChange = (value) => {
+        form.setFieldsValue({ staff_id: value });
+    };
+
 
     const handleDelete = async (record) => {
         try {
@@ -173,20 +191,37 @@ const Stock = () => {
         }
     };
 
+    const handleSearch = (value) => {
+        setSearchTerm(value);
+    };
+
+
     return (
         <Layout>
             <Navbar>
-                <Content style={{ padding: "12px"}}>
-                    <div style={{ marginBottom: 16 }}>
-                        <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>Add Stock</Button>
-                        <FloatButton icon={<DownloadOutlined />} onClick={handleDownload} tooltip={<div>Download</div>} />
-                        <Upload accept=".xlsx,.csv,.json" beforeUpload={(file) => { handleUpload(file); return false; }}>
-                            <Button icon={<UploadOutlined />} style={{ marginLeft: 8 }}>Bulk Import</Button>
+                <Content style={{ padding: "12px" }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+                        <Button type="primary" icon={<PlusOutlined />} onClick={showModal} style={{ marginRight: 8 }}>
+                            Add Stock
+                        </Button>
+                        <FloatButton icon={<DownloadOutlined />} onClick={handleDownload} tooltip={<div>Download</div>} style={{ marginRight: 8 }} />
+                        <Upload accept=".xlsx,.csv,.json" beforeUpload={(file) => { handleUpload(file); return false; }} style={{ marginRight: 8 }}>
+                            <Button icon={<UploadOutlined />}>Bulk Import</Button>
                         </Upload>
+                        <Input.Search
+                            placeholder="Search..."
+                            value={searchTerm}
+                            onChange={(e) => handleSearch(e.target.value)}
+                            style={{ width: 200 }}
+                        />
                     </div>
                     <Layout style={{ maxHeight: "80vh", overflowY: "auto" }} >
                         <Table
-                            dataSource={data}
+                            dataSource={data.filter(record =>
+                                Object.values(record).some(value =>
+                                    value && value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+                                )
+                            )}
                             columns={columns}
                             pagination={{ pageSize: 20 }}
                         />
@@ -213,8 +248,15 @@ const Stock = () => {
                             <Form.Item label="Book Stock Value Rs." name="bookStockValueRs" rules={[{ required: true, message: "Please enter Book Stock Value Rs." }]}>
                                 <Input />
                             </Form.Item>
-                            <Form.Item label="Issued to / Remarks" name="issuedToRemarks">
+                            <Form.Item label="Remarks" name="issuedToRemarks">
                                 <Input />
+                            </Form.Item>
+                            <Form.Item label="Issued" name="issued">
+                                <Select onChange={handleStaffChange}>
+                                    {staffList && staffList.map(option => (
+                                        <Option key={option.staffid} value={option.staffid}>{option.staffname}</Option>
+                                    ))}
+                                </Select>
                             </Form.Item>
                             <Form.Item label="Location" name="location">
                                 <Input />

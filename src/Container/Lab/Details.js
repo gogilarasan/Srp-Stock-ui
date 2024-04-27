@@ -7,7 +7,7 @@ import * as XLSX from 'xlsx';
 import { useLocation } from 'react-router-dom';
 
 const { Content } = Layout;
-const { Title } = Typography;
+// const { Title } = Typography;
 const { Option } = Select;
 
 const Details = () => {

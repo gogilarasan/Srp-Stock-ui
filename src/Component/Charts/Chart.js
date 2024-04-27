@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Card } from 'antd';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const Chart = ({ data, graphType: initialGraphType }) => {
     const [graphType, setGraphType] = useState(initialGraphType || 'bar');
 
     useEffect(() => {
+        // Add any effect logic here if needed
     }, [data]);
 
     const renderGraph = () => {
@@ -21,7 +23,7 @@ const Chart = ({ data, graphType: initialGraphType }) => {
                             <YAxis />
                             <Tooltip />
                             <Legend />
-                            <Bar dataKey="Stock" fill="#8884d8" />
+                            <Bar dataKey="Stock" fill="#8884d8" barSize={30} />
                         </BarChart>
                     </ResponsiveContainer>
                 );
@@ -31,9 +33,11 @@ const Chart = ({ data, graphType: initialGraphType }) => {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
-            {renderGraph()}
-        </div>
+        <Card title="Stock Chart">
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px'}}>
+                {renderGraph()}
+            </div>
+        </Card>
     );
 };
 

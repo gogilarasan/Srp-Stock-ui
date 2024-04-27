@@ -69,7 +69,7 @@ const Chart = ({ data }) => {
                     cellStyle={(_x, _y, value) => {
                         const ratio = 1;
                         return {
-                            background: `rgba(255,129,109,${ratio})`,
+                            background: `rgba(176, 174, 242,${ratio})`,
                             fontSize: '0.8rem', // Font size
                             color: `rgba(0, 0, 0, ${ratio / 2 + 0.4})`,
                         };

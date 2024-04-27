@@ -5,7 +5,7 @@ import { EditOutlined, ExclamationCircleOutlined, DeleteOutlined, PlusOutlined }
 import axios from "axios";
 
 const { Content } = Layout;
-const { Title } = Typography;
+// const { Title } = Typography;
 const { Option } = Select;
 
 const Staff = () => {
@@ -91,7 +91,6 @@ const Staff = () => {
       staffid: staff.staffid,
       staffname: staff.staffname,
       distid: staff.distid,
-      stock_type: staff.stock_type
     });
   };
 
@@ -154,11 +153,6 @@ const Staff = () => {
       sorter: (a, b) => a.distid - b.distid,
     },
     {
-      title: 'Stock Type',
-      dataIndex: 'stock_type',
-      key: 'stock_type',
-    },
-    {
       title: 'Actions',
       key: 'actions',
       render: (text, record) => (
@@ -202,9 +196,6 @@ const Staff = () => {
                       <Option key={option.dist_id} value={option.dist_id}>{option.dist_id}</Option>
                     ))}
                   </Select>
-                </Form.Item>
-                <Form.Item label="Stock Type" name="stock_type" rules={[{ required: false, message: "Please enter Stock Type" }]}>
-                  <Input />
                 </Form.Item>
                 <Form.Item>
                   <Button type="primary" htmlType="submit">

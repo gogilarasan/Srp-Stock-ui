@@ -49,7 +49,7 @@ const CustomCard = ({ backgroundColor, title, count, icon, iconColor, iconBackgr
           <Space direction="horizontal" align="center">
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '8px' }}>{title}</div>
-              <div style={{ fontSize: '24px', fontWeight: 'bold', color: iconColor }}>{count}</div>
+              <div style={{ fontSize: '34px', fontWeight: 'bold', color: iconColor }}>{count}</div>
             </div>
           </Space>
         </Card>

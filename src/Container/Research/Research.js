@@ -7,7 +7,7 @@ import { DatePicker } from "antd";
 import moment from "moment";
 
 const { Content } = Layout;
-const { Title } = Typography;
+// const { Title } = Typography;
 const { Option } = Select;
 
 const Research = () => {
@@ -58,7 +58,6 @@ const Research = () => {
   const fetchDistid = async () => {
     try {
       const response = await axios.post("http://localhost:3000/admin/get_all_stocks");
-      console.log("DistDetails:", response.data);
       setDistdetails(response.data);
     } catch (error) {
       console.log("Error Fetching the DistDetails", error);
@@ -94,6 +93,7 @@ const Research = () => {
   const handleUpdate = async () => {
     try {
       const values = await form.validateFields();
+      values.rs_id = selectedRecord.rs_id; 
       const response = await axios.post("http://localhost:3000/admin/update_research_scholar", values);
       if (response.status === 200) {
         message.success("Research Scholar updated successfully");
@@ -138,6 +138,10 @@ const Research = () => {
     form.setFieldsValue({ distid: value });
   };
 
+  const handleStaffChange = (value) => {
+    form.setFieldsValue({ staff_id: value });
+  };
+
 
   const handleSearch = (value) => {
     setSearchText(value);
@@ -152,11 +156,6 @@ const Research = () => {
       title: 'Name',
       dataIndex: 'rs_name',
       key: 'rs_name',
-    },
-    {
-      title: 'Seat No',
-      dataIndex: 'seat_no',
-      key: 'seat_no',
     },
     {
       title: 'Tenure',
@@ -191,7 +190,7 @@ const Research = () => {
       <Navbar>
         <Content style={{ padding: "24px" }}>
           <div style={{ marginBottom: 16 }}>
-            <Button type="primary" icon={<PlusOutlined />} onClick={showModal} style={{ marginBottom: 16 ,marginRight: 10}}>
+            <Button type="primary" icon={<PlusOutlined />} onClick={showModal} style={{ marginBottom: 16, marginRight: 10 }}>
               Add Scholar
             </Button>
             <Input.Search
@@ -220,13 +219,6 @@ const Research = () => {
                 <Input />
               </Form.Item>
               <Form.Item
-                label="Seat No"
-                name="seat_no"
-                rules={[{ required: true, message: "Please enter seat no" }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
                 label="Tenure"
                 name="tenure"
                 rules={[{ required: true, message: "Please select tenure" }]}
@@ -245,7 +237,7 @@ const Research = () => {
                 name="staff_id"
                 rules={[{ required: true, message: "Please enter staff id" }]}
               >
-                <Select onChange={handleDistrictChange}>
+                <Select onChange={handleStaffChange}>
                   {staffList && staffList.map(option => (
                     <Option key={option.staffid} value={option.staffid}>{option.staffname}</Option>
                   ))}

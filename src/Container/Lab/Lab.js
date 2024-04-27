@@ -7,7 +7,7 @@ import axios from "axios";
 import './Lab.css';
 
 const { Content } = Layout;
-const { Title } = Typography;
+// const { Title } = Typography;
 const { Meta } = Card;
 
 const Lab = () => {

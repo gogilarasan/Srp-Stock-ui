@@ -6,7 +6,7 @@ import Navbar from "../../Component/Navbar/Navbar";
 import TodoList from "../../Component/ToDo/Todo";
 
 const { Content } = Layout;
-const { Title } = Typography;
+// const { Title } = Typography;
 const { Option } = Select;
 
 const Report = () => {
@@ -136,7 +136,7 @@ const Report = () => {
                                 <Form.Item
                                     name="lab_id"
                                     label="Lab ID"
-                                    rules={[{ required: true, message: "Please select lab ID" }]}
+                                    rules={[{ required: false, message: "Please select lab ID" }]}
                                 >
                                     <Select onChange={handleLabChange}>
                                         {labs.map((lab) => (
@@ -147,7 +147,7 @@ const Report = () => {
                                 <Form.Item
                                     name="dist_id"
                                     label="District ID"
-                                    rules={[{ required: true, message: "Please select district ID" }]}
+                                    rules={[{ required: false, message: "Please select district ID" }]}
                                 >
                                     <Select>
                                         {stocks.map((stock) => (

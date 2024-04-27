@@ -1,13 +1,42 @@
-.login-form-shadow {
-    background-color: #fff;
-    padding: 24px;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  @media (max-width: 767px) {
-    .login-form-shadow {
-      padding: 16px;
-    }
-  }
-  
+.login-layout {
+  background: linear-gradient(to right, #adafd3, #000dff);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.login-content {
+  background-color: rgba(255, 255, 255, 0.8); /* Adjust the opacity as needed */
+  padding: 20px;
+}
+
+.login-card {
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.tab-pane {
+  display: flex;
+  align-items: center;
+}
+
+.tab-icon {
+  margin-right: 12px;
+  font-size: 20px;
+}
+
+.login-button {
+  width: 100%;
+}
+
+.tab-title {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  transition: background-color 0.3s;
+}
+
+.tab-title:hover {
+  background-color: #e0e0e0;
+}

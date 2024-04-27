@@ -5,7 +5,7 @@ import Navbar from "../../Component/Navbar/Navbar";
 import axios from "axios";
 
 const { Content } = Layout;
-const { Title } = Typography;
+// const { Title } = Typography;
 const { TabPane } = Tabs;
 const { Option } = Select;
 const { Meta } = Card;

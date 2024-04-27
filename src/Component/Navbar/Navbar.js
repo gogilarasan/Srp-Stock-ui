@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { Layout, Menu, Button, Tooltip } from "antd";
+import React, { useState, useEffect } from "react";
+import { Layout, Menu, Button, Tooltip, Modal, Typography, Avatar } from "antd";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   HomeOutlined,
   StockOutlined,
@@ -12,7 +13,8 @@ import {
   FileTextOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
-  LogoutOutlined
+  LogoutOutlined,
+  UserOutlined
 } from "@ant-design/icons";
 
 const { Header, Sider, Content } = Layout;
@@ -26,21 +28,49 @@ const Navbar = ({ children }) => {
     return isCollapsed === "true";
   });
 
+  const [userDetails, setUserDetails] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      const username = document.cookie.replace(/(?:(?:^|.*;\s*)username\s*=\s*([^;]*).*$)|^.*$/, "$1");
+
+      if (username) {
+        try {
+          const response = await axios.post("http://localhost:3000/admin/userDetails", { username: username });
+          setUserDetails(response.data);
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+        }
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
+
   const toggleCollapsed = () => {
     const newState = !collapsed;
     setCollapsed(newState);
     localStorage.setItem("collapsed", newState.toString());
   };
 
-  const handleLogout = () => {
-    navigate("/");
-    document.cookie = "cookieName=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  };
-
   const onBreakpoint = broken => {
     if (broken) {
       setCollapsed(true);
     }
+  };
+
+  const handleLogout = () => {
+    navigate("/");
+    document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;";
+  };
+
+  const openUserModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
   };
 
   return (
@@ -99,10 +129,36 @@ const Navbar = ({ children }) => {
         <Header
           style={{
             background: "#f5f5f5",
-            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)"
+            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "0 24px"
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: "24px" }}>
+          <div>
+            <Typography.Title level={2} style={{ margin: 0, color: "#1890ff" }}>
+              IST
+            </Typography.Title>
+          </div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            {userDetails && (
+              <Tooltip title={`Logged in as ${userDetails.username}`}>
+                <span style={{ marginRight: "10px" }}>
+                  <UserOutlined
+                    onClick={openUserModal}
+                    style={{
+                      fontSize: "18px",
+                      color: "#000",
+                      padding: "8px",
+                      borderRadius: "50%",
+                      background: "#fff",
+                      cursor: "pointer"
+                    }}
+                  />
+                </span>
+              </Tooltip>
+            )}
             <Tooltip title="Logout">
               <LogoutOutlined
                 style={{
@@ -111,8 +167,7 @@ const Navbar = ({ children }) => {
                   padding: "8px",
                   borderRadius: "50%",
                   background: "#fff",
-                  cursor: "pointer",
-                  marginTop: "10px"
+                  cursor: "pointer"
                 }}
                 onClick={handleLogout}
               />
@@ -123,6 +178,30 @@ const Navbar = ({ children }) => {
           {children}
         </Content>
       </Layout>
+      <Modal
+        visible={modalVisible}
+        onCancel={closeModal}
+        footer={null}
+        centered
+      >
+        {userDetails ? (
+          <>
+            <div style={{ display: "flex", alignItems: "center", flexDirection: "column", marginBottom: "16px" }}>
+              <Avatar icon={<UserOutlined />} size={100} style={{ marginBottom: "16px", backgroundColor: "#f56a00" }} />
+              <div style={{ marginBottom: "16px" }}>
+                <Typography.Text strong style={{ color: "#1890ff" }}>Username:</Typography.Text> {userDetails.username || "No Username"}
+              </div>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography.Text strong style={{ color: "#1890ff" }}>Email:</Typography.Text> {userDetails.email || "No Email"}
+              </div>
+              <Button type="primary">Change Password</Button>
+              {/* onClick={handleChangePassword} */}
+            </div>
+          </>
+        ) : (
+          <Typography.Text type="danger">User details not available.</Typography.Text>
+        )}
+      </Modal>
     </Layout>
   );
 };

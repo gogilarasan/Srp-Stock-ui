@@ -12,7 +12,7 @@ import CustomCard from "../../Component/Cards/OverviewCard";
 import TodoList from "../../Component/ToDo/Tododash";
 
 const { Content } = Layout;
-const { Title } = Typography;
+// const { Title } = Typography;
 
 const Home = () => {
   const [counts, setCounts] = useState({
@@ -239,14 +239,20 @@ const Home = () => {
             <Row gutter={[16, 32]}>
               <Col xs={24} sm={12}>
                 <div>
-                  <Card></Card>
+                  <CustomCard
+                    backgroundColor="#f0f2f5"
+                    title="Stock Value"
+                    count={totalStockValue.toFixed(2)}
+                    icon={<DollarOutlined style={{ fontSize: '24px', color: '#fff' }} />}
+                    iconColor="#52c41a"
+                    iconBackground="#52c41a"
+                    circleColor=""
+                  />
                 </div>
               </Col>
               <Col xs={24} sm={12}>
                 <div>
-                  <Card>
-
-                  </Card>
+                    <Graph data={chartData} graphType="bar" />
                 </div>
               </Col>
             </Row>

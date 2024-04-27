@@ -63,7 +63,7 @@ const LargeDataChart = ({ data: initialData }) => {
                             stroke="#8884d8"
                         />
                         <Line type="monotone" dataKey="Quantity" stroke="#ff0000" strokeWidth={2} dot={false} />
-                        <Line type="monotone" dataKey="Value" stroke="#0000ff" strokeWidth={2} dot={false} />
+                        {/* <Line type="monotone" dataKey="Value" stroke="#0000ff" strokeWidth={2} dot={false} /> */}
                     </LineChart>
                 );
             case 'area':

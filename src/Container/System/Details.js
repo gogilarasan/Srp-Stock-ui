@@ -4,8 +4,8 @@ import { Layout, Typography, Form, Input, Button, message, Modal, Card, Col, Row
 import { EditOutlined, DeleteOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import Navbar from "../../Component/Navbar/Navbar";
 import axios from "axios";
-import { saveAs } from 'file-saver';
-import * as XLSX from 'xlsx';
+// import { saveAs } from 'file-saver';
+// import * as XLSX from 'xlsx';
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -21,6 +21,8 @@ const Details = () => {
     const [modalType, setModalType] = useState("create");
     const [selectedStock, setSelectedStock] = useState(null);
     const [uploadFile, setUploadFile] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+
 
     const fetchStocks = async () => {
         try {
@@ -75,7 +77,11 @@ const Details = () => {
                 dist_id: stock.dist_id,
                 seat_number: stock.seat_number,
                 remarks: stock.remarks,
-                stock_type: stock.stock_type
+                stock_type: stock.stock_type,
+                cpu: stock.cpu,
+                keyboard: stock.keyboard,
+                monitor: stock.monitor,
+                mouse: stock.mouse
             });
         } else {
             form.resetFields();
@@ -88,13 +94,18 @@ const Details = () => {
         processAndStoreData(file);
     };
 
+    const handleSearch = (value) => {
+        setSearchTerm(value);
+    };
+
+
     const processAndStoreData = async (file) => {
         try {
             const formData = new FormData();
             formData.append('file', file);
             formData.append('lab_id', lab);
 
-            const response = await axios.post("http://localhost:3000/admin/bulk-import-dept", formData, {
+            const response = await axios.post("http://localhost:3000/admin/bulk-import-deptsystem", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -111,6 +122,10 @@ const Details = () => {
         }
     };
 
+    const filteredStocks = stocks.filter(stock =>
+        stock.dist_id.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     useEffect(() => {
         fetchStocks();
     }, []);
@@ -124,8 +139,14 @@ const Details = () => {
                         <Upload beforeUpload={(file) => { setUploadFile(file); handleUpload(file); return false; }}>
                             <Button icon={<UploadOutlined />} style={{ marginLeft: 8 }}>Bulk Import</Button>
                         </Upload>
+                        <Input.Search
+                            placeholder="Search by Dist ID..."
+                            value={searchTerm}
+                            onChange={(e) => handleSearch(e.target.value)}
+                            style={{ width: 200, marginBottom: 16 }}
+                        />
                         <Row gutter={[16, 16]}>
-                            {stocks.map(stock => (
+                            {filteredStocks.map(stock => (
                                 <Col key={stock.stock_id} xs={24} sm={12} md={8} lg={6}>
                                     <Card
                                         title={<Title level={5}>{stock.dist_id}</Title>}
@@ -173,6 +194,15 @@ const Details = () => {
                                     <Input />
                                 </Form.Item>
                                 <Form.Item name="cpu" label="CPU">
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item name="keyboard" label="Keyboard">
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item name="mouse" label="Mouse">
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item name="monitor" label="Monitor">
                                     <Input />
                                 </Form.Item>
                                 <Form.Item>

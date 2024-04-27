@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { List, Checkbox, Button, Modal, Card, Typography, Space, Tag } from 'antd';
+import { List, Checkbox, Card, Typography, Space, Tag, Popconfirm, message, Button, Modal } from 'antd';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import './TodoList.css';
 
@@ -8,7 +8,7 @@ const { Text } = Typography;
 const TodoList = ({ todos, toggleTodo, deleteTodo }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedTask, setSelectedTask] = useState(null);
-    const currentDate = new Date(); // Get current date
+    const currentDate = new Date(); 
 
     const handleTaskClick = (task) => {
         setSelectedTask(task);
@@ -18,6 +18,15 @@ const TodoList = ({ todos, toggleTodo, deleteTodo }) => {
     const closeModal = () => {
         setModalVisible(false);
         setSelectedTask(null);
+    };
+
+    const handleDeleteTask = (taskId) => {
+        deleteTodo(taskId);
+        message.success('Task deleted successfully');
+    };
+
+    const handleCancelDelete = () => {
+        message.info('Deletion canceled');
     };
 
     return (
@@ -41,7 +50,7 @@ const TodoList = ({ todos, toggleTodo, deleteTodo }) => {
                         let tagColor = isHighPriority ? 'red' : 'green';
                         let priorityMessage = isHighPriority ? 'Priority: High' : 'Priority: Low';
                         if (item.status === 'completed') {
-                            tagColor = 'blue'; 
+                            tagColor = 'blue';
                             priorityMessage = 'Completed';
                         }
 
@@ -58,7 +67,7 @@ const TodoList = ({ todos, toggleTodo, deleteTodo }) => {
                                         className="task-checkbox"
                                         style={{ marginRight: '20px' }}
                                     />
-                                    <div className="list-item-content"> 
+                                    <div className="list-item-content">
                                         <List.Item.Meta
                                             title={<span style={{ fontSize: '24px' }}>{item.task_name}</span>}
                                             description={<span style={{ fontSize: '14px' }}>{item.description}</span>}
@@ -76,13 +85,20 @@ const TodoList = ({ todos, toggleTodo, deleteTodo }) => {
                                                 onClick={() => handleTaskClick(item)}
                                                 size="small"
                                             />
-                                            <Button
-                                                className="delete-button"
-                                                type="danger"
-                                                icon={<DeleteOutlined />}
-                                                onClick={() => deleteTodo(item.task_id)}
-                                                size="small"
-                                            />
+                                            <Popconfirm
+                                                title="Are you sure you want to delete this task?"
+                                                onConfirm={() => handleDeleteTask(item.task_id)}
+                                                onCancel={handleCancelDelete}
+                                                okText="Yes"
+                                                cancelText="No"
+                                            >
+                                                <Button
+                                                    className="delete-button"
+                                                    type="danger"
+                                                    icon={<DeleteOutlined />}
+                                                    size="small"
+                                                />
+                                            </Popconfirm>
                                         </Space>
                                     </div>
                                 </div>
