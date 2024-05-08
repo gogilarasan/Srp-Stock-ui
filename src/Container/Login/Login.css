@@ -1,11 +1,23 @@
-.login-layout {
+/* .login-layout {
   background: linear-gradient(to right, #adafd3, #000dff);
   background-size: cover;
   background-repeat: no-repeat;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.dev/svgjs' width='1600' height='404' preserveAspectRatio='none' viewBox='0 0 1511 404'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1145%26quot%3b)' fill='none'%3e%3crect width='1511' height='404' x='0' y='0' fill='rgba(0%2c 123%2c 255%2c 1)'%3e%3c/rect%3e%3cpath d='M 0%2c190 C 100.8%2c218.2 302.4%2c362 504%2c331 C 705.6%2c300 806.6%2c55.8 1008%2c35 C 1209.4%2c14.2 1410.4%2c188.6 1511%2c227L1511 404L0 404z' fill='rgba(255%2c 255%2c 255%2c 1)'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1145'%3e%3crect width='1511' height='404' fill='white'%3e%3c/rect%3e%3c/mask%3e%3c/defs%3e%3c/svg%3e");
+} */
+
+.login-layout {
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+  height: 100vh;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.dev/svgjs' width='1600' height='404' preserveAspectRatio='none' viewBox='0 0 1511 404'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1145%26quot%3b)' fill='none'%3e%3crect width='1511' height='404' x='0' y='0' fill='rgba(0%2c 123%2c 255%2c 1)'%3e%3c/rect%3e%3cpath d='M 0%2c190 C 100.8%2c218.2 302.4%2c362 504%2c331 C 705.6%2c300 806.6%2c55.8 1008%2c35 C 1209.4%2c14.2 1410.4%2c188.6 1511%2c227L1511 404L0 404z' fill='rgba(255%2c 255%2c 255%2c 1)'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1145'%3e%3crect width='1511' height='404' fill='white'%3e%3c/rect%3e%3c/mask%3e%3c/defs%3e%3c/svg%3e");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .login-content {
-  background-color: rgba(255, 255, 255, 0.8); /* Adjust the opacity as needed */
+  /* background-color: rgba(255, 255, 255, 1); Adjust the opacity as needed */
   padding: 20px;
 }
 
@@ -28,6 +40,29 @@
 .login-button {
   width: 100%;
 }
+
+.custom-header {
+  background: transparent;
+  padding: 20px; /* Adjust padding as needed */
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  /* Add styles for the logo container */
+  width: 50px; /* Adjust width as needed */
+  height: 50px; /* Adjust height as needed */
+  background-color: #f0f0f0; /* Example background color */
+  /* You can add more styles like border-radius, box-shadow, etc. */
+}
+
+.header-title {
+  margin-left: 20px; /* Adjust margin between logo and title */
+  color: #333; /* Example text color */
+  font-size: 42px; /* Example font size */
+  /* You can add more styles like font-weight, text-transform, etc. */
+}
+
 
 .tab-title {
   display: inline-block;

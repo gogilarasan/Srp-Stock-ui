@@ -128,7 +128,7 @@ const Navbar = ({ children }) => {
       <Layout>
         <Header
           style={{
-            background: "#f5f5f5",
+            background: "lavender",
             boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
             display: "flex",
             justifyContent: "space-between",

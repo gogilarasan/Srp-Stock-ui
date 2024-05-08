@@ -22,7 +22,7 @@ const TodoList = ({ todos, toggleTodo, deleteTodo }) => {
 
     return (
         <div className="todo-list-container">
-            <Card className="todo-list-card" title={<Text strong>To Do</Text>} style={{ overflowY: 'auto' }}>
+            <Card className="todo-list-card" title={<Text strong>To Do</Text>} style={{ height: '420px' , overflowY: 'auto' }}>
                 <List
                     dataSource={todos.sort((a, b) => {
                         if (a.status === 'completed' && b.status !== 'completed') {

@@ -243,7 +243,15 @@ const Home = () => {
                     backgroundColor="#f0f2f5"
                     title="Stock Value"
                     count={totalStockValue.toFixed(2)}
-                    icon={<DollarOutlined style={{ fontSize: '24px', color: '#fff' }} />}
+                    icon={<span style={{
+                      fontSize: '24px', color: '#fff', display: "inline-block",
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      backgroundColor: "#8884d8",
+                      textAlign: "center",
+                      lineHeight: "40px"
+                    }}>₹</span>}
                     iconColor="#52c41a"
                     iconBackground="#52c41a"
                     circleColor=""
@@ -252,7 +260,7 @@ const Home = () => {
               </Col>
               <Col xs={24} sm={12}>
                 <div>
-                    <Graph data={chartData} graphType="bar" />
+                  <Graph data={chartData} graphType="bar" />
                 </div>
               </Col>
             </Row>

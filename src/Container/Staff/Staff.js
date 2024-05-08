@@ -179,7 +179,7 @@ const Staff = () => {
                 style={{ width: 200 }}
               />
             </div>
-            <Layout style={{ maxHeight: "80vh", overflowY: "auto" }} >
+            <Layout style={{ maxHeight: "70vh", overflowY: "auto" }} >
               <Table dataSource={filteredData} columns={columns} pagination={{ pageSize: 10 }} />
             </Layout>
             <Modal title={createStaffVisible ? "Add Staff" : "Edit Staff"} visible={visible} onCancel={handleCancel} footer={null}>

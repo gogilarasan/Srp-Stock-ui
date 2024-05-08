@@ -39,6 +39,7 @@ const Details = () => {
 
     const fetchData = async () => {
         try {
+            console.log("LabId : ",labId)
             let response = await axios.post("http://localhost:3000/admin/get_user_logs_by_lab_id", { labid: labId });
             let responseData = response.data;
 

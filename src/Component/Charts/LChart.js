@@ -190,11 +190,11 @@ const LargeDataChart = ({ data: initialData }) => {
     return (
         <div style={{ width: '100%', height: '600px', padding: '20px' }}>
             <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
-                {/* <Button type={graphType === 'line' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('line')} style={{ marginRight: '10px' }}>Line Chart</Button> */}
-                {/* <Button type={graphType === 'area' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('area')} style={{ marginRight: '10px' }}>Area Chart</Button>
+                <Button type={graphType === 'line' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('line')} style={{ marginRight: '10px' }}>Line Chart</Button>
+                <Button type={graphType === 'area' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('area')} style={{ marginRight: '10px' }}>Area Chart</Button>
                 <Button type={graphType === 'bar' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('bar')} style={{ marginRight: '10px' }}>Bar Chart</Button>
                 <Button type={graphType === 'scatter' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('scatter')} style={{ marginRight: '10px' }}>Scatter Chart</Button>
-                <Button type={graphType === 'pie' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('pie')} style={{ marginRight: '10px' }}>Pie Chart</Button>
+                {/* <Button type={graphType === 'pie' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('pie')} style={{ marginRight: '10px' }}>Pie Chart</Button>
                 <Button type={graphType === 'heatmap' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('heatmap')} style={{ marginRight: '10px' }}>Heatmap</Button>
                 <Button type={graphType === 'radar' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('radar')} style={{ marginRight: '10px' }}>Radar Chart</Button>
                 <Button type={graphType === 'radialBar' ? 'primary' : 'default'} onClick={() => handleGraphTypeChange('radialBar')} style={{ marginRight: '10px' }}>Radial Bar Chart</Button>

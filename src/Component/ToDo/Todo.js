@@ -31,7 +31,7 @@ const TodoList = ({ todos, toggleTodo, deleteTodo }) => {
 
     return (
         <div className="todo-list-container">
-            <Card className="todo-list-card" title={<Text strong>To Do</Text>} style={{ height: '500px', overflowY: 'auto' }}>
+            <Card className="todo-list-card" title={<Text strong>Task Manager</Text>} style={{ height: '500px', overflowY: 'auto' }}>
                 <List
                     dataSource={todos.sort((a, b) => {
                         if (a.status === 'completed' && b.status !== 'completed') {
@@ -115,8 +115,6 @@ const TodoList = ({ todos, toggleTodo, deleteTodo }) => {
                 {selectedTask && (
                     <Card className="task-details-card">
                         <Space direction="vertical">
-                            <Text className="detail-title" strong>Task Name:</Text>
-                            <Text className="detail-text" style={{ fontSize: '18px' }}>{selectedTask.task_name}</Text>
                             <Text className="detail-title" strong>Description:</Text>
                             <Text className="detail-text">{selectedTask.description}</Text>
                             <Text className="detail-title" strong>Due Date:</Text>
