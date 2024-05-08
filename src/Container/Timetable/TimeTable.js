@@ -3,6 +3,8 @@ import { Layout, Typography, Tabs, Card, Modal, Form, Input, Button, Select, Tim
 import { ScheduleOutlined } from "@ant-design/icons";
 import Navbar from "../../Component/Navbar/Navbar";
 import axios from "axios";
+import config from '../../../config';
+const apiUrl = config.apiUrl;
 
 const { Content } = Layout;
 // const { Title } = Typography;
@@ -28,7 +30,7 @@ const TimeTable = () => {
 
   const fetchLabs = async () => {
     try {
-      const response = await fetch("http://localhost:3000/admin/get_all_labs", {
+      const response = await fetch(`${apiUrl}/admin/get_all_labs`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -48,7 +50,7 @@ const TimeTable = () => {
 
   const fetchTimeTable = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/admin/get_all_timetables");
+      const response = await axios.post(`${apiUrl}/admin/get_all_timetables`);
       console.log(response.data);
       setTimetableData(response.data);
     } catch (error) {
@@ -58,7 +60,7 @@ const TimeTable = () => {
 
   const fetchStaffs = async () => {
     try {
-      const response = await fetch("http://localhost:3000/admin/get_all_staffs", {
+      const response = await fetch(`${apiUrl}/admin/get_all_staffs`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -101,7 +103,7 @@ const TimeTable = () => {
     values.timings = `${startTime}-${endTime}`;
 
     try {
-      const response = await fetch("http://localhost:3000/admin/create_timetable", {
+      const response = await fetch(`${apiUrl}/admin/create_timetable`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -128,7 +130,7 @@ const TimeTable = () => {
 
   const handleDelete = async (timetableId) => {
     try {
-      const response = await axios.post('http://localhost:3000/admin/delete_timetable', {
+      const response = await axios.post(`${apiUrl}/admin/delete_timetable`, {
         timetable_id: timetableId
       });
       if (response.status === 200) {
@@ -175,7 +177,7 @@ const TimeTable = () => {
       console.log("Selected entry", selectedEntry);
       const updatedEntry = { ...selectedEntry, ...values };
       console.log("Update entry : ", updatedEntry);
-      const response = await axios.post('http://localhost:3000/admin/update_timetable', updatedEntry);
+      const response = await axios.post(`${apiUrl}/admin/update_timetable`, updatedEntry);
       if (response.status === 200) {
         message.success('Timetable updated successfully');
         fetchTimeTable();

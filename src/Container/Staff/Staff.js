@@ -3,6 +3,8 @@ import { Layout, Typography, Table, Button, Modal, Form, Input, message, Select 
 import Navbar from "../../Component/Navbar/Navbar";
 import { EditOutlined, ExclamationCircleOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
+import config from '../../../config';
+const apiUrl = config.apiUrl;
 
 const { Content } = Layout;
 // const { Title } = Typography;
@@ -25,7 +27,7 @@ const Staff = () => {
 
   const fetchStaffList = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/admin/get_all_staffs");
+      const response = await axios.post(`${apiUrl}/admin/get_all_staffs`);
       setStaffList(response.data);
     } catch (error) {
       console.error("Error fetching staff list:", error);
@@ -34,7 +36,7 @@ const Staff = () => {
 
   const fetchDistid = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/admin/get_all_stocks");
+      const response = await axios.post(`${apiUrl}/admin/get_all_stocks`);
       console.log("DistDetails:", response.data);
       setDistdetails(response.data);
     } catch (error) {
@@ -54,7 +56,7 @@ const Staff = () => {
   const onFinish = async (values) => {
     try {
       if (createStaffVisible) {
-        const response = await axios.post("http://localhost:3000/admin/create_staff", values);
+        const response = await axios.post(`${apiUrl}/admin/create_staff`, values);
         if (response.status === 200) {
           message.success("Staff created successfully");
           fetchStaffList();
@@ -62,7 +64,7 @@ const Staff = () => {
           form.resetFields();
         }
       } else if (updateStaffVisible) {
-        const response = await axios.post("http://localhost:3000/admin/update_staff", { staffId: selectedStaff.staffid, ...values });
+        const response = await axios.post(`${apiUrl}/admin/update_staff`, { staffId: selectedStaff.staffid, ...values });
         if (response.status === 200) {
           message.success("Staff updated successfully");
           fetchStaffList();
@@ -96,7 +98,7 @@ const Staff = () => {
 
   const handleDelete = async (staffId) => {
     try {
-      const response = await axios.post("http://localhost:3000/admin/delete_staff", { staffId });
+      const response = await axios.post(`${apiUrl}/admin/delete_staff`, { staffId });
       if (response.status === 200) {
         message.success("Staff deleted successfully");
         fetchStaffList();

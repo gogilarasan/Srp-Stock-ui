@@ -4,6 +4,8 @@ import { UserOutlined, UserAddOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import './Login.css';
+import config from '../../../config';
+const apiUrl = config.apiUrl;
 
 const { Content, Header } = Layout;
 const { Title } = Typography;
@@ -16,7 +18,7 @@ const Login = () => {
   const onFinishSignIn = async (values) => {
     try {
       setLoading(true);
-      const response = await axios.post('http://localhost:3000/admin/signin', values);
+      const response = await axios.post(`${apiUrl}/admin/signin`, values);
       if (response.status === 200) {
         message.success('Logged in successfully');
         document.cookie = `username=${values.username}`;
@@ -35,7 +37,7 @@ const Login = () => {
   const onFinishSignUp = async (values) => {
     try {
       setLoading(true);
-      const response = await axios.post('http://localhost:3000/admin/create_login', values);
+      const response = await axios.post(`${apiUrl}/admin/create_login`, values);
       if (response.status === 200 || response.status === 201) {
         message.success('Account created successfully');
         document.cookie = `username=${values.username}`;

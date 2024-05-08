@@ -5,6 +5,8 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { DatePicker } from "antd";
 import moment from "moment";
+import config from '../../../config';
+const apiUrl = config.apiUrl;
 
 const { Content } = Layout;
 // const { Title } = Typography;
@@ -28,7 +30,7 @@ const Research = () => {
 
   const fetchResearchScholars = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/admin/get_all_research_scholars");
+      const response = await axios.post(`${apiUrl}/admin/get_all_research_scholars`);
       setDataSource(response.data);
     } catch (error) {
       console.error("Error fetching research scholars:", error);
@@ -37,7 +39,7 @@ const Research = () => {
 
   const fetchStaffList = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/admin/get_all_staffs");
+      const response = await axios.post(`${apiUrl}/admin/get_all_staffs`);
       setStaffList(response.data);
     } catch (error) {
       console.error("Error fetching staff list:", error);
@@ -57,7 +59,7 @@ const Research = () => {
 
   const fetchDistid = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/admin/get_all_stocks");
+      const response = await axios.post(`${apiUrl}/admin/get_all_stocks`);
       setDistdetails(response.data);
     } catch (error) {
       console.log("Error Fetching the DistDetails", error);
@@ -67,7 +69,7 @@ const Research = () => {
   const handleAdd = async () => {
     try {
       const values = await form.validateFields();
-      const response = await axios.post("http://localhost:3000/admin/create_research_scholar", values);
+      const response = await axios.post(`${apiUrl}/admin/create_research_scholar`, values);
       if (response.status === 200) {
         message.success("Research Scholar added successfully");
         fetchResearchScholars();
@@ -94,7 +96,7 @@ const Research = () => {
     try {
       const values = await form.validateFields();
       values.rs_id = selectedRecord.rs_id; 
-      const response = await axios.post("http://localhost:3000/admin/update_research_scholar", values);
+      const response = await axios.post(`${apiUrl}/admin/update_research_scholar`, values);
       if (response.status === 200) {
         message.success("Research Scholar updated successfully");
         fetchResearchScholars();
@@ -109,7 +111,7 @@ const Research = () => {
 
   const handleDelete = async (rs_id) => {
     try {
-      const response = await axios.post("http://localhost:3000/admin/delete_research_scholar", { scholarId: rs_id });
+      const response = await axios.post(`${apiUrl}/admin/delete_research_scholar`, { scholarId: rs_id });
       if (response.status === 200) {
         message.success("Research Scholar deleted successfully");
         fetchResearchScholars();

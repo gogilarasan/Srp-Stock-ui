@@ -5,6 +5,8 @@ import axios from "axios";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import { useLocation } from 'react-router-dom';
+import config from '../../../config';
+const apiUrl = config.apiUrl;
 
 const { Content } = Layout;
 // const { Title } = Typography;
@@ -40,7 +42,7 @@ const Details = () => {
     const fetchData = async () => {
         try {
             console.log("LabId : ",labId)
-            let response = await axios.post("http://localhost:3000/admin/get_user_logs_by_lab_id", { labid: labId });
+            let response = await axios.post(`${apiUrl}/admin/get_user_logs_by_lab_id`, { labid: labId });
             let responseData = response.data;
 
             if (selectedDate) {
@@ -48,7 +50,7 @@ const Details = () => {
             }
 
             const updatedData = await Promise.all(responseData.map(async (item) => {
-                const timetableResponse = await axios.post("http://localhost:3000/admin/get_timetable_by_id", { timetableId: item.timetable_id });
+                const timetableResponse = await axios.post(`${apiUrl}/admin/get_timetable_by_id`, { timetableId: item.timetable_id });
                 return { ...item, subjectName: timetableResponse.data.subject_name };
             }));
             setData(updatedData);

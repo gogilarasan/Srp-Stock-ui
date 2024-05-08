@@ -4,6 +4,8 @@ import Navbar from "../../Component/Navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import './System.css';
+import config from '../../../config';
+const apiUrl = config.apiUrl;
 
 const { Content } = Layout;
 const { Meta } = Card;
@@ -18,7 +20,7 @@ const System = () => {
 
   const fetchLabs = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/admin/get_all_labs");
+      const response = await axios.post(`http://localhost:3000/admin/get_all_labs`);
       setLabs(response.data);
     } catch (error) {
       console.error("Error fetching labs:", error);

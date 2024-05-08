@@ -6,6 +6,8 @@ import axios from "axios";
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import "./Stocks.css"
+import config from '../../../config';
+const apiUrl = config.apiUrl;
 
 const { Content } = Layout;
 // const { Title } = Typography;
@@ -52,7 +54,7 @@ const Stock = () => {
 
     const fetchData = async () => {
         try {
-            const response = await axios.post("http://localhost:3000/admin/get_all_stock_depts");
+            const response = await axios.post(`${apiUrl}/admin/get_all_stock_depts`);
             setData(response.data);
         } catch (error) {
             console.error("Error fetching data: ", error);
@@ -61,7 +63,7 @@ const Stock = () => {
 
     const fetchStaffList = async () => {
         try {
-            const response = await axios.post("http://localhost:3000/admin/get_all_staffs");
+            const response = await axios.post(`${apiUrl}/admin/get_all_staffs`);
             setStaffList(response.data);
         } catch (error) {
             console.error("Error fetching staff list:", error);
@@ -82,9 +84,9 @@ const Stock = () => {
             const values = await form.validateFields();
             let response;
             if (selectedItem) {
-                response = await axios.post("http://localhost:3000/admin/update_stock_dept", { ...values, deptId: selectedItem.id });
+                response = await axios.post(`${apiUrl}/admin/update_stock_dept`, { ...values, deptId: selectedItem.id });
             } else {
-                response = await axios.post("http://localhost:3000/admin/create_stock_dept", values);
+                response = await axios.post(`${apiUrl}/admin/create_stock_dept`, values);
             }
             if (response.data.message === "Stock department created successfully" || response.data.message === "Stock department updated successfully") {
                 fetchData();
@@ -119,7 +121,7 @@ const Stock = () => {
 
     const handleDelete = async (record) => {
         try {
-            const response = await axios.post("http://localhost:3000/admin/delete_stock_dept", { deptId: record.id });
+            const response = await axios.post(`${apiUrl}/admin/delete_stock_dept`, { deptId: record.id });
             if (response.data.message === "Stock department deleted successfully") {
                 fetchData();
             } else {
@@ -173,7 +175,7 @@ const Stock = () => {
             const formData = new FormData();
             formData.append('file', file);
 
-            const response = await axios.post("http://localhost:3000/admin/bulk-import", formData, {
+            const response = await axios.post(`${apiUrl}/admin/bulk-import`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

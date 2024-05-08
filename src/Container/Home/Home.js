@@ -10,6 +10,9 @@ import VGraph from "../../Component/Charts/VCharts";
 import SGraph from "../../Component/Charts/LChart";
 import CustomCard from "../../Component/Cards/OverviewCard";
 import TodoList from "../../Component/ToDo/Tododash";
+import config from '../../../config';
+const apiUrl = config.apiUrl;
+
 
 const { Content } = Layout;
 // const { Title } = Typography;
@@ -31,10 +34,10 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const [stocksRes, staffsRes, scholarsRes, system] = await Promise.all([
-          axios.post("http://localhost:3000/admin/get_all_stock_depts"),
-          axios.post("http://localhost:3000/admin/get_all_staffs"),
-          axios.post("http://localhost:3000/admin/get_all_research_scholars"),
-          axios.post("http://localhost:3000/admin/get_all_stocks"),
+          axios.post(`${apiUrl}/admin/get_all_stock_depts`),
+          axios.post(`${apiUrl}/admin/get_all_staffs`),
+          axios.post(`${apiUrl}/admin/get_all_research_scholars`),
+          axios.post(`${apiUrl}/admin/get_all_stocks`),
         ]);
         setCounts({
           total_stocks: stocksRes.data.length,
@@ -49,7 +52,7 @@ const Home = () => {
 
     const fetchLab = async () => {
       try {
-        const response = await axios.post("http://localhost:3000/admin/get_all_labs");
+        const response = await axios.post(`${apiUrl}/admin/get_all_labs`);
         const labs = response.data;
 
         const graphData = [];
@@ -58,7 +61,7 @@ const Home = () => {
           const labId = lab.lab_id;
           const labName = lab.lab_name;
 
-          const stocksResponse = await axios.post("http://localhost:3000/admin/get_stock_by_Labid", { lab_id: labId });
+          const stocksResponse = await axios.post(`${apiUrl}/admin/get_stock_by_Labid`, { lab_id: labId });
           const stocks = stocksResponse.data;
           const stockCount = stocks.length;
 
@@ -73,7 +76,7 @@ const Home = () => {
 
     const fetchLabTimeTable = async () => {
       try {
-        const response = await axios.post("http://localhost:3000/admin/get_all_labs");
+        const response = await axios.post(`${apiUrl}/admin/get_all_labs`);
         const labs = response.data;
 
         const timData = [];
@@ -82,7 +85,7 @@ const Home = () => {
           const labId = lab.lab_id;
           const labName = lab.lab_name;
 
-          const TimeResponse = await axios.post("http://localhost:3000/admin/get_timetable_by_Lab_id", { lab_id: labId });
+          const TimeResponse = await axios.post(`${apiUrl}/admin/get_timetable_by_Lab_id`, { lab_id: labId });
           const data = TimeResponse.data;
 
           timData.push({ LabId: labId, Lab: labName, Timetable: data });
@@ -96,7 +99,7 @@ const Home = () => {
 
     const fetchStocks = async () => {
       try {
-        const response = await axios.post("http://localhost:3000/admin/get_all_stock_depts");
+        const response = await axios.post(`${apiUrl}/admin/get_all_stock_depts`);
         const stocks = response.data;
 
         const stockData = [];
@@ -132,7 +135,7 @@ const Home = () => {
 
   const fetchTodo = async () => {
     try {
-      const todosResponse = await axios.get("http://localhost:3000/admin/get_all_todos");
+      const todosResponse = await axios.get(`${apiUrl}/admin/get_all_todos`);
       setTodos(todosResponse.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -142,7 +145,7 @@ const Home = () => {
   const toggleTodo = async (taskId, newStatus) => {
     try {
       // Update the todo status
-      await axios.put("http://localhost:3000/admin/update_todo_status", { taskId, status: newStatus });
+      await axios.put(`${apiUrl}/admin/update_todo_status`, { taskId, status: newStatus });
       message.success("Task status updated successfully");
       fetchTodo();
     } catch (error) {

@@ -5,6 +5,8 @@ import Navbar from "../../Component/Navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import './Lab.css';
+import config from '../../../config';
+const apiUrl = config.apiUrl;
 
 const { Content } = Layout;
 // const { Title } = Typography;
@@ -24,7 +26,7 @@ const Lab = () => {
 
   const fetchLabs = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/admin/get_all_labs");
+      const response = await axios.post(`${apiUrl}/admin/get_all_labs`);
       setLabs(response.data);
     } catch (error) {
       console.error("Error fetching labs:", error);
@@ -40,7 +42,7 @@ const Lab = () => {
   const handleOk = async (values) => {
     try {
       if (editLab) {
-        const response = await axios.post("http://localhost:3000/admin/update_lab", {
+        const response = await axios.post(`${apiUrl}/admin/update_lab`, {
           lab_id: selectedLab.lab_id,
           lab_name: values.labName,
           lab_incharge: values.labIncharge,
@@ -51,7 +53,7 @@ const Lab = () => {
           fetchLabs();
         }
       } else {
-        const response = await axios.post("http://localhost:3000/admin/create_lab", {
+        const response = await axios.post(`${apiUrl}/admin/create_lab`, {
           lab_id: values.labId,
           lab_name: values.labName,
           lab_incharge: values.labIncharge,
@@ -79,7 +81,7 @@ const Lab = () => {
   const handleDelete = async (lab) => {
     try {
       console.log(lab);
-      const response = await axios.post("http://localhost:3000/admin/delete_lab", {
+      const response = await axios.post(`${apiUrl}/admin/delete_lab`, {
         labId: lab.lab_id
       });
       if (response.status === 200) {

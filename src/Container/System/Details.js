@@ -6,6 +6,8 @@ import Navbar from "../../Component/Navbar/Navbar";
 import axios from "axios";
 // import { saveAs } from 'file-saver';
 // import * as XLSX from 'xlsx';
+import config from '../../../config';
+const apiUrl = config.apiUrl;
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -26,7 +28,7 @@ const Details = () => {
 
     const fetchStocks = async () => {
         try {
-            const response = await axios.post("http://localhost:3000/admin/get_stock_by_Labid", {
+            const response = await axios.post(`${apiUrl}/admin/get_stock_by_Labid`, {
                 lab_id: lab
             });
             setStocks(response.data);
@@ -37,7 +39,7 @@ const Details = () => {
 
     const createStock = async (values) => {
         try {
-            await axios.post("http://localhost:3000/admin/create_stock", values);
+            await axios.post(`${apiUrl}/admin/create_stock`, values);
             message.success("Stock created successfully");
             fetchStocks();
             setIsModalVisible(false);
@@ -48,7 +50,7 @@ const Details = () => {
 
     const updateStock = async (values) => {
         try {
-            await axios.post("http://localhost:3000/admin/update_stock", { ...values, stock_id: selectedStock.stock_id });
+            await axios.post(`${apiUrl}/admin/update_stock`, { ...values, stock_id: selectedStock.stock_id });
             message.success("Stock updated successfully");
             fetchStocks();
             setIsModalVisible(false);
@@ -59,7 +61,7 @@ const Details = () => {
 
     const deleteStock = async (stock_id) => {
         try {
-            await axios.post("http://localhost:3000/admin/delete_stock", { stock_id });
+            await axios.post(`${apiUrl}/admin/delete_stock`, { stock_id });
             message.success("Stock deleted successfully");
             fetchStocks();
         } catch (error) {
@@ -105,7 +107,7 @@ const Details = () => {
             formData.append('file', file);
             formData.append('lab_id', lab);
 
-            const response = await axios.post("http://localhost:3000/admin/bulk-import-deptsystem", formData, {
+            const response = await axios.post(`${apiUrl}/admin/bulk-import-deptsystem`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

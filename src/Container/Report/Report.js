@@ -7,6 +7,8 @@ import TodoList from "../../Component/ToDo/Todo";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts"; // Import necessary components
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import config from '../../../config';
+const apiUrl = config.apiUrl;
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -24,10 +26,10 @@ const Report = () => {
 
     const fetchData = async () => {
         try {
-            const labsResponse = await axios.post("http://localhost:3000/admin/get_all_labs");
+            const labsResponse = await axios.post(`${apiUrl}/admin/get_all_labs`);
             setLabs(labsResponse.data);
 
-            const todosResponse = await axios.get("http://localhost:3000/admin/get_all_todos");
+            const todosResponse = await axios.get(`${apiUrl}/admin/get_all_todos`);
             setTodos(todosResponse.data.data);
         } catch (error) {
             handleError("Error fetching data:", error);
@@ -61,7 +63,7 @@ const Report = () => {
 
     const handleCreate = async (values) => {
         try {
-            await axios.post("http://localhost:3000/admin/create_todo", values);
+            await axios.post(`${apiUrl}/admin/create_todo`, values);
             message.success("Task created successfully");
             fetchData();
             setVisible(false);
@@ -73,7 +75,7 @@ const Report = () => {
 
     const handleLabChange = async (value) => {
         try {
-            const stocksResponse = await axios.post("http://localhost:3000/admin/get_stock_by_Labid", { lab_id: value });
+            const stocksResponse = await axios.post(`${apiUrl}/admin/get_stock_by_Labid`, { lab_id: value });
             setStocks(stocksResponse.data);
         } catch (error) {
             handleError("Error fetching stocks:", error);
@@ -82,7 +84,7 @@ const Report = () => {
 
     const toggleTodo = async (taskId, newStatus) => {
         try {
-            await axios.put("http://localhost:3000/admin/update_todo_status", { taskId, status: newStatus });
+            await axios.put(`${apiUrl}/admin/update_todo_status`, { taskId, status: newStatus });
             message.success("Task status updated successfully");
             fetchData();
         } catch (error) {
@@ -92,7 +94,7 @@ const Report = () => {
 
     const deleteTodo = async (taskId) => {
         try {
-            await axios.delete("http://localhost:3000/admin/delete_todo", { data: { task_id: taskId } });
+            await axios.delete(`${apiUrl}/admin/delete_todo`, { data: { task_id: taskId } });
             message.success("Task deleted successfully");
             fetchData();
         } catch (error) {

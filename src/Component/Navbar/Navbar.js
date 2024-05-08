@@ -16,6 +16,8 @@ import {
   LogoutOutlined,
   UserOutlined
 } from "@ant-design/icons";
+import config from '../../../config';
+const apiUrl = config.apiUrl;
 
 const { Header, Sider, Content } = Layout;
 
